@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Zaman Yolcusu: Macera Keşif</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,11 +97,7 @@
         font-weight: 600;
     }
 
-    .difficulty {
-        display: flex;
-        gap: 10px;
-        margin-top: 26px;
-    }
+    .difficulty { display: flex; gap: 10px; margin-top: 26px; }
 
     .diff-btn {
         background: rgba(255, 255, 255, 0.08);
@@ -124,13 +120,7 @@
         box-shadow: 0 6px 22px rgba(255, 154, 60, 0.5);
     }
 
-    .civ-container {
-        display: flex;
-        gap: 24px;
-        margin-top: 28px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+    .civ-container { display: flex; gap: 24px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
 
     .civ-card {
         width: 240px;
@@ -151,467 +141,325 @@
     }
     .civ-card:hover .civ-icon { animation: wiggle 0.6s ease-in-out; }
 
-    .civ-icon {
-        font-size: 56px;
-        margin-bottom: 10px;
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    }
+    .civ-icon { font-size: 56px; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)); }
+    .civ-card h3 { margin: 6px 0; letter-spacing: 2px; color: #fff9c4; font-size: 18px; font-weight: 700; }
+    .civ-card p { color: #d4c8e5; font-size: 13px; margin: 4px 0 0; }
 
-    .civ-card h3 {
-        margin: 6px 0;
-        letter-spacing: 2px;
-        color: #fff9c4;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .civ-card p {
-        color: #d4c8e5;
-        font-size: 13px;
-        margin: 4px 0 0;
-    }
-
-    .civ-stars {
-        margin-top: 12px;
-        font-size: 18px;
-        letter-spacing: 3px;
-        color: #ffd86b;
-    }
+    .civ-stars { margin-top: 12px; font-size: 18px; letter-spacing: 3px; color: #ffd86b; }
     .civ-stars .dim { color: rgba(255, 255, 255, 0.15); }
-    .civ-stars .count {
-        display: inline-block;
-        margin-left: 8px;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.6);
-        letter-spacing: 1px;
-    }
+    .civ-stars .count { display: inline-block; margin-left: 8px; font-size: 12px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
-    .hint {
-        margin-top: 36px;
-        color: #ffb6c7;
-        font-size: 13px;
-        letter-spacing: 2px;
-    }
+    .hint { margin-top: 36px; color: #ffb6c7; font-size: 13px; letter-spacing: 2px; }
     .hint kbd {
-        display: inline-block;
-        padding: 4px 10px;
-        margin: 0 3px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff9c4;
-        font-family: inherit;
-        font-size: 12px;
-        font-weight: 600;
+        display: inline-block; padding: 4px 10px; margin: 0 3px;
+        border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1); color: #fff9c4;
+        font-family: inherit; font-size: 12px; font-weight: 600;
     }
 
     /* === OYUN === */
     #game-wrapper {
-        display: none;
-        position: relative;
-        z-index: 2;
-        border-radius: 24px;
-        overflow: hidden;
+        display: none; position: relative; z-index: 2;
+        border-radius: 24px; overflow: hidden;
         box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
         animation: fadeIn 0.5s ease-out;
     }
-
-    canvas#gameCanvas {
-        display: block;
-        cursor: none;
-        background: #1a0f2e;
-    }
+    canvas#gameCanvas { display: block; cursor: none; background: #1a0f2e; }
 
     #hud {
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        padding: 14px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        pointer-events: none;
-        z-index: 5;
+        position: absolute; top: 0; left: 0; right: 0;
+        padding: 14px; display: flex; justify-content: space-between;
+        align-items: flex-start; pointer-events: none; z-index: 5;
     }
-
     .hud-panel {
         background: rgba(42, 31, 74, 0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         border: 2px solid rgba(255, 255, 255, 0.15);
-        border-radius: 18px;
-        padding: 10px 18px;
-        min-width: 180px;
+        border-radius: 18px; padding: 10px 18px; min-width: 180px;
     }
+    .hud-label { font-size: 11px; letter-spacing: 2px; color: #ffb6c7; font-weight: 600; text-transform: uppercase; }
+    #floorTitle { font-weight: 700; font-size: 18px; color: #fff9c4; margin-top: 2px; }
+    #objective { font-size: 13px; color: #fff; margin-top: 4px; }
 
-    .hud-label {
-        font-size: 11px;
-        letter-spacing: 2px;
-        color: #ffb6c7;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    #floorTitle {
-        font-weight: 700;
-        font-size: 18px;
-        color: #fff9c4;
-        margin-top: 2px;
-    }
-
-    #objective {
-        font-size: 13px;
-        color: #fff;
-        margin-top: 4px;
-    }
-
-    .bar {
-        height: 8px;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 4px;
-        overflow: hidden;
-        margin-top: 8px;
-    }
-    .bar > div {
-        height: 100%;
-        border-radius: 4px;
-        transition: width 0.3s ease;
-    }
+    .bar { height: 8px; background: rgba(255, 255, 255, 0.12); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .bar > div { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
     #progBar > div { background: linear-gradient(90deg, #4cd6e0, #a5e887); width: 0%; }
 
-    #timerBox {
-        font-weight: 700;
-        font-size: 26px;
-        color: #fff9c4;
-        text-align: center;
-    }
-
-    #starPreview {
-        font-size: 18px;
-        letter-spacing: 3px;
-        color: #ffd86b;
-    }
+    #timerBox { font-weight: 700; font-size: 26px; color: #fff9c4; text-align: center; }
+    #starPreview { font-size: 18px; letter-spacing: 3px; color: #ffd86b; }
     #starPreview .dim { color: rgba(255, 255, 255, 0.15); }
 
     #interaction-prompt {
-        position: absolute;
-        bottom: 50px;
-        left: 50%;
+        position: absolute; bottom: 50px; left: 50%;
         transform: translateX(-50%);
         background: linear-gradient(135deg, #ffd86b, #ff9a3c);
-        color: #2a1f4a;
-        font-weight: 700;
-        padding: 12px 28px;
-        border-radius: 30px;
-        display: none;
-        font-size: 14px;
-        letter-spacing: 2px;
+        color: #2a1f4a; font-weight: 700;
+        padding: 12px 28px; border-radius: 30px;
+        display: none; font-size: 14px; letter-spacing: 2px;
         box-shadow: 0 8px 24px rgba(255, 154, 60, 0.5);
-        animation: pulse 1.2s infinite;
-        z-index: 6;
+        animation: pulse 1.2s infinite; z-index: 6;
     }
-
     @keyframes pulse {
         0%, 100% { transform: translateX(-50%) scale(1); }
         50% { transform: translateX(-50%) scale(1.08); }
     }
 
     #minimap {
-        position: absolute;
-        bottom: 16px;
-        right: 16px;
-        width: 160px;
-        height: 120px;
+        position: absolute; bottom: 16px; right: 16px;
+        width: 160px; height: 120px;
         border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        background: rgba(42, 31, 74, 0.7);
-        z-index: 5;
+        border-radius: 12px; background: rgba(42, 31, 74, 0.7); z-index: 5;
     }
 
     .overlay {
-        position: absolute;
-        inset: 0;
+        position: absolute; inset: 0;
         background: rgba(42, 31, 74, 0.92);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        z-index: 10;
-        padding: 40px;
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        display: none; flex-direction: column;
+        justify-content: center; align-items: center;
+        text-align: center; z-index: 10; padding: 40px;
         animation: fadeIn 0.4s ease-out;
     }
     .overlay.active { display: flex; }
-
-    .overlay h2 {
-        font-size: 40px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        color: #fff9c4;
-        margin: 0 0 14px;
-    }
-
-    .overlay p {
-        max-width: 540px;
-        color: #fff;
-        font-size: 15px;
-        line-height: 1.7;
-    }
+    .overlay h2 { font-size: 40px; font-weight: 700; letter-spacing: 2px; color: #fff9c4; margin: 0 0 14px; }
+    .overlay p { max-width: 540px; color: #fff; font-size: 15px; line-height: 1.7; }
 
     .btn {
         margin-top: 22px;
         background: linear-gradient(135deg, #ffd86b, #ff9a3c);
-        border: none;
-        color: #2a1f4a;
-        padding: 14px 36px;
-        letter-spacing: 2px;
-        font-family: 'Fredoka', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        border-radius: 30px;
-        transition: all 0.25s;
+        border: none; color: #2a1f4a;
+        padding: 14px 36px; letter-spacing: 2px;
+        font-family: 'Fredoka', sans-serif; font-size: 14px; font-weight: 700;
+        cursor: pointer; border-radius: 30px; transition: all 0.25s;
         box-shadow: 0 6px 20px rgba(255, 154, 60, 0.4);
     }
-    .btn:hover {
-        transform: translateY(-2px) scale(1.04);
-        box-shadow: 0 10px 30px rgba(255, 154, 60, 0.6);
-    }
-    .btn.secondary {
-        background: rgba(255, 255, 255, 0.12);
-        color: #fff;
-        box-shadow: none;
-    }
-    .btn.secondary:hover {
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
-    }
+    .btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 30px rgba(255, 154, 60, 0.6); }
+    .btn.secondary { background: rgba(255, 255, 255, 0.12); color: #fff; box-shadow: none; }
+    .btn.secondary:hover { background: rgba(255, 255, 255, 0.2); box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15); }
 
-    #starsShown {
-        font-size: 64px;
-        letter-spacing: 6px;
-        margin: 12px 0;
-        animation: sparkle 1.5s ease-in-out infinite;
-    }
+    #starsShown { font-size: 64px; letter-spacing: 6px; margin: 12px 0; animation: sparkle 1.5s ease-in-out infinite; }
     #starsShown .dim { color: rgba(255, 255, 255, 0.15); }
 
     #factBubble {
-        position: absolute;
-        top: 100px;
-        left: 50%;
+        position: absolute; top: 100px; left: 50%;
         transform: translateX(-50%) translateY(-8px);
         background: linear-gradient(135deg, #4cd6e0, #5cb8ff);
-        color: #fff;
-        padding: 12px 24px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        max-width: 520px;
-        text-align: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.4s, transform 0.4s;
-        z-index: 7;
+        color: #fff; padding: 12px 24px; border-radius: 20px;
+        font-size: 14px; font-weight: 600; max-width: 520px;
+        text-align: center; opacity: 0; pointer-events: none;
+        transition: opacity 0.4s, transform 0.4s; z-index: 7;
         box-shadow: 0 10px 30px rgba(76, 214, 224, 0.45);
     }
     #factBubble.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     #toast {
-        position: absolute;
-        top: 160px;
-        left: 50%;
+        position: absolute; top: 160px; left: 50%;
         transform: translateX(-50%) translateY(-10px);
         background: linear-gradient(135deg, #ff6b9d, #ffd86b);
-        color: #fff;
-        font-weight: 700;
-        padding: 10px 24px;
-        border-radius: 20px;
-        font-size: 15px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s, transform 0.3s;
-        z-index: 6;
+        color: #fff; font-weight: 700;
+        padding: 10px 24px; border-radius: 20px; font-size: 15px;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s; z-index: 6;
         box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* Güç-up chip'leri */
-    #effectsBar {
-        position: absolute;
-        bottom: 16px;
-        left: 16px;
-        display: flex;
-        gap: 8px;
-        z-index: 5;
-        pointer-events: none;
-    }
+    #effectsBar { position: absolute; bottom: 16px; left: 16px; display: flex; gap: 8px; z-index: 5; pointer-events: none; }
     .effect-chip {
         background: rgba(76, 214, 224, 0.22);
-        border: 2px solid #4cd6e0;
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 22px;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        border: 2px solid #4cd6e0; color: #fff;
+        padding: 6px 12px; border-radius: 22px; font-size: 20px;
+        display: flex; align-items: center; gap: 6px;
         box-shadow: 0 4px 20px rgba(76, 214, 224, 0.35);
-        backdrop-filter: blur(10px);
-        animation: chipIn 0.3s ease-out;
+        backdrop-filter: blur(10px); animation: chipIn 0.3s ease-out;
     }
     @keyframes chipIn {
         from { opacity: 0; transform: translateY(10px) scale(0.8); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .effect-chip .t {
-        font-size: 13px; font-weight: 700; color: #fff9c4;
-        min-width: 16px; text-align: center;
-    }
+    .effect-chip .t { font-size: 13px; font-weight: 700; color: #fff9c4; min-width: 16px; text-align: center; }
 
-    /* MP durum göstergesi (oyun içi) */
     #mpBadge {
-        position: absolute;
-        top: 14px;
-        left: 50%;
+        position: absolute; top: 14px; left: 50%;
         transform: translateX(-50%);
         background: rgba(76, 214, 224, 0.22);
-        border: 2px solid #4cd6e0;
-        color: #fff9c4;
-        padding: 4px 12px;
-        border-radius: 14px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        display: none;
-        z-index: 5;
-        pointer-events: none;
+        border: 2px solid #4cd6e0; color: #fff9c4;
+        padding: 4px 12px; border-radius: 14px;
+        font-size: 11px; font-weight: 700; letter-spacing: 2px;
+        display: none; z-index: 5; pointer-events: none;
         box-shadow: 0 2px 10px rgba(76, 214, 224, 0.3);
     }
     #mpBadge.active { display: block; }
     #mpBadge .dot {
-        display: inline-block;
-        width: 8px; height: 8px;
-        background: #a5e887;
-        border-radius: 50%;
-        margin-right: 6px;
-        vertical-align: middle;
+        display: inline-block; width: 8px; height: 8px;
+        background: #a5e887; border-radius: 50%;
+        margin-right: 6px; vertical-align: middle;
         box-shadow: 0 0 6px #a5e887;
         animation: pulseDot 2s ease-in-out infinite;
     }
-    @keyframes pulseDot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* Kombo göstergesi */
     #comboBox {
-        position: absolute;
-        top: 118px;
-        left: 50%;
+        position: absolute; top: 118px; left: 50%;
         transform: translateX(-50%) scale(0.8);
         background: linear-gradient(135deg, #ff6b9d, #ffd86b);
-        color: #fff;
-        font-weight: 700;
-        font-size: 18px;
-        padding: 10px 22px;
-        border-radius: 22px;
-        letter-spacing: 2px;
-        opacity: 0;
-        pointer-events: none;
+        color: #fff; font-weight: 700; font-size: 18px;
+        padding: 10px 22px; border-radius: 22px; letter-spacing: 2px;
+        opacity: 0; pointer-events: none;
         transition: opacity 0.25s, transform 0.25s cubic-bezier(.2,1.4,.3,1);
-        z-index: 6;
-        box-shadow: 0 8px 24px rgba(255, 107, 157, 0.5);
+        z-index: 6; box-shadow: 0 8px 24px rgba(255, 107, 157, 0.5);
     }
     #comboBox.show { opacity: 1; transform: translateX(-50%) scale(1); }
 
-    /* Multiplayer paneli */
     .mp-panel {
-        margin-top: 28px;
-        padding: 18px 22px;
+        margin-top: 28px; padding: 18px 22px;
         background: rgba(76, 214, 224, 0.08);
         border: 2px solid rgba(76, 214, 224, 0.35);
-        border-radius: 18px;
-        max-width: 560px;
-        width: 100%;
+        border-radius: 18px; max-width: 560px; width: 100%;
     }
-    .mp-title {
-        font-size: 13px;
-        letter-spacing: 3px;
-        color: #4cd6e0;
-        font-weight: 700;
-        margin-bottom: 12px;
-    }
-    .mp-controls {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
+    .mp-title { font-size: 13px; letter-spacing: 3px; color: #4cd6e0; font-weight: 700; margin-bottom: 12px; }
+    .mp-controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
     .mp-btn {
         background: rgba(76, 214, 224, 0.2);
-        border: 2px solid #4cd6e0;
-        color: #fff;
-        padding: 8px 18px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        transition: all 0.2s;
+        border: 2px solid #4cd6e0; color: #fff;
+        padding: 8px 18px; border-radius: 20px; cursor: pointer;
+        font-family: inherit; font-size: 13px; font-weight: 600;
+        letter-spacing: 1px; transition: all 0.2s;
     }
     .mp-btn:hover { background: #4cd6e0; color: #2a1f4a; }
     .mp-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .mp-input {
         background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 8px 14px;
-        border-radius: 20px;
-        font-family: inherit;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 3px;
-        text-align: center;
-        width: 120px;
-        text-transform: uppercase;
+        border: 2px solid rgba(255, 255, 255, 0.2); color: #fff;
+        padding: 8px 14px; border-radius: 20px; font-family: inherit;
+        font-size: 13px; font-weight: 700; letter-spacing: 3px;
+        text-align: center; width: 120px; text-transform: uppercase;
     }
     .mp-input:focus { outline: none; border-color: #4cd6e0; }
-    .mp-status {
-        margin-top: 12px;
-        font-size: 12px;
-        color: #d4c8e5;
-        min-height: 18px;
-    }
+    .mp-status { margin-top: 12px; font-size: 12px; color: #d4c8e5; min-height: 18px; }
     .mp-status b {
-        display: inline-block;
-        background: #ffd86b;
-        color: #2a1f4a;
-        padding: 2px 10px;
-        border-radius: 6px;
-        letter-spacing: 4px;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        user-select: all;
+        display: inline-block; background: #ffd86b; color: #2a1f4a;
+        padding: 2px 10px; border-radius: 6px; letter-spacing: 4px;
+        font-size: 14px; font-weight: 700; cursor: pointer; user-select: all;
         transition: transform 0.15s, box-shadow 0.15s;
     }
-    .mp-status b:hover {
-        transform: scale(1.06);
-        box-shadow: 0 4px 14px rgba(255, 216, 107, 0.5);
-    }
+    .mp-status b:hover { transform: scale(1.06); box-shadow: 0 4px 14px rgba(255, 216, 107, 0.5); }
     .mp-status b:active { transform: scale(0.96); }
 
     @media (max-width: 860px) {
         .title { font-size: 48px; letter-spacing: 2px; }
         #minimap { width: 110px; height: 84px; }
     }
+
+    /* ====== MOBİL v5 — TAM DESTEK ====== */
+    body.game-active {
+        position: fixed !important;
+        inset: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        touch-action: none;
+    }
+    body.game-active #menu-screen { display: none !important; }
+    body.game-active #game-wrapper {
+        display: block !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(var(--gs, 1)) !important;
+        transform-origin: center center !important;
+        margin: 0 !important;
+        width: 960px !important;
+        height: 600px !important;
+    }
+    canvas#gameCanvas { touch-action: none; width: 960px; height: 600px; }
+
+    #touchControls {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 9999;
+        display: none;
+    }
+    @media (max-width: 1200px) {
+        body.game-active #touchControls { display: block; }
+    }
+
+    #joyPad {
+        position: absolute;
+        bottom: max(20px, env(safe-area-inset-bottom, 20px));
+        left: max(16px, env(safe-area-inset-left, 0px));
+        width: 150px; height: 150px;
+        background: rgba(42, 31, 74, 0.75);
+        border: 4px solid #4cd6e0;
+        border-radius: 50%;
+        pointer-events: auto; touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    #joyPad.active {
+        border-color: #ffd86b;
+        background: rgba(255, 216, 107, 0.35);
+    }
+    #joyStick {
+        position: absolute; top: 50%; left: 50%;
+        width: 64px; height: 64px;
+        background: linear-gradient(135deg, #4cd6e0, #5cb8ff);
+        border: 3px solid #fff; border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+    .touch-btn {
+        position: absolute; border: none; border-radius: 50%;
+        pointer-events: auto; touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+        font-weight: 700; font-family: inherit;
+        user-select: none; color: #fff;
+    }
+    #touchE {
+        bottom: max(40px, env(safe-area-inset-bottom, 20px) + 20px);
+        right: max(16px, env(safe-area-inset-right, 0px));
+        width: 96px; height: 96px;
+        background: linear-gradient(135deg, #ffd86b, #ff9a3c);
+        color: #2a1f4a; font-size: 28px;
+        border: 3px solid #fff;
+    }
+    #touchSprint {
+        bottom: max(60px, env(safe-area-inset-bottom, 20px) + 50px);
+        right: calc(max(16px, env(safe-area-inset-right, 0px)) + 112px);
+        width: 76px; height: 76px;
+        background: rgba(76, 214, 224, 0.6);
+        border: 3px solid #4cd6e0; font-size: 30px;
+    }
+    .touch-btn.pressed { transform: scale(0.9); filter: brightness(1.2); }
+
+    @media (max-width: 980px) {
+        html, body:not(.game-active) {
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100vh;
+        }
+        body:not(.game-active) {
+            align-items: flex-start;
+            padding: 16px 8px 32px;
+        }
+        .title { font-size: 42px; letter-spacing: 2px; }
+        .civ-card { width: 160px; padding: 18px 12px; }
+        .mp-controls { flex-direction: column; gap: 8px; }
+        .mp-input { width: 160px; }
+    }
 </style>
 </head>
 <body>
 
 <canvas id="bgCanvas"></canvas>
+
+<!-- Sürüm etiketi (v5 görürsen son sürümsün) -->
+<div id="versionTag" style="position:fixed;top:4px;left:4px;font-size:11px;color:#a5e887;background:rgba(0,0,0,0.7);padding:3px 10px;border-radius:8px;z-index:99997;pointer-events:none;font-family:monospace;font-weight:700;">v5 MOBİL</div>
+
+<!-- Dokunmatik kontroller -->
+<div id="touchControls">
+    <div id="joyPad"><div id="joyStick"></div></div>
+    <button id="touchSprint" class="touch-btn">🏃</button>
+    <button id="touchE" class="touch-btn">E</button>
+</div>
 
 <!-- === MENÜ === -->
 <div id="menu-screen">
@@ -713,10 +561,6 @@
 </div>
 
 <script>
-/* =======================================================
-   ZAMAN YOLCUSU — Çocuklar İçin Macera Modu
-   ======================================================= */
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const minimap = document.getElementById('minimap');
@@ -727,7 +571,6 @@ const factEl = document.getElementById('factBubble');
 
 const W = canvas.width, H = canvas.height;
 
-/* ---------- Zorluk ---------- */
 let difficulty = 'easy';
 document.querySelectorAll('.diff-btn').forEach(b => {
     b.addEventListener('click', () => {
@@ -741,12 +584,9 @@ const diffMods = {
     normal: { timeMul: 1.0, guardSpeed: 1.0, vision: 200 }
 };
 
-/* ---------- Varlıklar ---------- */
 const assets = {
-    mezopotamya: { img: new Image(), src: 'zigurat.jpeg', mp3: 'zigurat.mp3',
-                   bg: ['#7a5ba8','#3d2263','#ffd86b'], accent: '#4cd6e0' },
-    misir:       { img: new Image(), src: 'misir.jpeg',   mp3: 'misir.mp3',
-                   bg: ['#d4a574','#7a5024','#ffb347'], accent: '#ffcc00' }
+    mezopotamya: { img: new Image(), src: 'zigurat.jpeg', mp3: 'zigurat.mp3', bg: ['#7a5ba8','#3d2263','#ffd86b'], accent: '#4cd6e0' },
+    misir:       { img: new Image(), src: 'misir.jpeg',   mp3: 'misir.mp3',   bg: ['#d4a574','#7a5024','#ffb347'], accent: '#ffcc00' }
 };
 Object.values(assets).forEach(a => {
     a.imgReady = false; a.audio = null;
@@ -754,7 +594,6 @@ Object.values(assets).forEach(a => {
     a.img.onerror = () => a.imgReady = false;
 });
 
-/* ---------- Ses ---------- */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
@@ -787,32 +626,25 @@ function stopAllMusic() {
     Object.values(assets).forEach(a => { if (a.audio) { a.audio.pause(); a.audio.currentTime = 0; } });
 }
 
-/* ---------- Bölümler (ikonlu + eğitici) ---------- */
 const levels = {
     mezopotamya: [
-        { name: "Ziggurat Girişi",
-          obj: "Antik parçaları topla!",
-          count: 4, guards: 1, time: 90,
-          story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı. Onları bul, ama gölgelerden uzak dur!",
+        { name: "Ziggurat Girişi", obj: "Antik parçaları topla!", count: 4, guards: 1, time: 90,
+          story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı.",
           pool: [
             { icon: '🛞', fact: 'Tekerlek 5000 yıl önce Mezopotamya\'da icat edildi!' },
             { icon: '🏺', fact: 'Çömlekler suyu ve yiyeceği saklamak için kullanılırdı.' },
             { icon: '📜', fact: 'Yazı ilk burada bulundu — buna çivi yazısı denir!' },
             { icon: '🗿', fact: 'Ziggurat "gökyüzüne uzanan tapınak" demektir.' }
           ] },
-        { name: "Yıldız Odası",
-          obj: "Gök parçalarını topla!",
-          count: 3, guards: 2, time: 85,
-          story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐ Tavanda yıldız haritaları var. Bulabilecek misin?",
+        { name: "Yıldız Odası", obj: "Gök parçalarını topla!", count: 3, guards: 2, time: 85,
+          story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐",
           pool: [
-            { icon: '⭐', fact: 'Burçlar (koç, boğa...) ilk burada bulundu!' },
+            { icon: '⭐', fact: 'Burçlar ilk burada bulundu!' },
             { icon: '🌙', fact: 'Ay takvimini Mezopotamyalılar yaptı.' },
             { icon: '☀️', fact: 'Güneş saatiyle zamanı ölçerlerdi.' }
           ] },
-        { name: "Zirve Tapınağı",
-          obj: "Kutsal sırları bul!",
-          count: 3, guards: 2, time: 85,
-          story: "Kulenin en tepesindeyiz! 🗝️ Son kutsal eşyalar burada. Dikkat — bekçiler uyumuyor!",
+        { name: "Zirve Tapınağı", obj: "Kutsal sırları bul!", count: 3, guards: 2, time: 85,
+          story: "Kulenin en tepesindeyiz! 🗝️ Son kutsal eşyalar burada.",
           pool: [
             { icon: '🔑', fact: 'Eski anahtarlar tahta ya da bronzdan yapılırdı.' },
             { icon: '👑', fact: 'Krallar tapınağa özel törenlerle girerdi.' },
@@ -820,31 +652,25 @@ const levels = {
           ] }
     ],
     misir: [
-        { name: "Piramit Girişi",
-          obj: "Hiyeroglifleri bul!",
-          count: 3, guards: 1, time: 90,
-          story: "Antik Mısır'a hoş geldin! 🔺 Piramitler firavunların kocaman mezarlarıydı. Bak bakalım ne bulacaksın!",
+        { name: "Piramit Girişi", obj: "Hiyeroglifleri bul!", count: 3, guards: 1, time: 90,
+          story: "Antik Mısır'a hoş geldin! 🔺",
           pool: [
-            { icon: '📜', fact: 'Hiyeroglif resim-yazıdır — her sembol bir anlam taşır!' },
-            { icon: '🔺', fact: 'En büyük piramit Giza\'dadır, 146 metre yüksekliğinde!' },
+            { icon: '📜', fact: 'Hiyeroglif resim-yazıdır!' },
+            { icon: '🔺', fact: 'En büyük piramit 146 metre yüksekliğinde!' },
             { icon: '👁️', fact: 'Horus\'un Gözü kötülüklerden korurdu.' }
           ] },
-        { name: "Gizli Geçit",
-          obj: "Hazineleri topla!",
-          count: 4, guards: 2, time: 85,
-          story: "Duvarların arkasında gizli odalar! 💎 Altın skarabeleri bul ama muhafızlara yakalanma!",
+        { name: "Gizli Geçit", obj: "Hazineleri topla!", count: 4, guards: 2, time: 85,
+          story: "Duvarların arkasında gizli odalar! 💎",
           pool: [
             { icon: '🪲', fact: 'Skarabe böceği Mısır\'da şans getirirdi.' },
             { icon: '💎', fact: 'Firavunlar altın ve mücevherlerle gömülürdü.' },
             { icon: '🏺', fact: 'Kanopik kavanozlar mumyalamada kullanılırdı.' },
             { icon: '🗝️', fact: 'Piramitlerde gizli tüneller vardır!' }
           ] },
-        { name: "Kral Mezarı",
-          obj: "Kutsal sunağa ulaş!",
-          count: 3, guards: 2, time: 85,
-          story: "İşte firavunun mezar odası! 👑 Son görev: kutsal eşyaları topla. Şanslar!",
+        { name: "Kral Mezarı", obj: "Kutsal sunağa ulaş!", count: 3, guards: 2, time: 85,
+          story: "İşte firavunun mezar odası! 👑",
           pool: [
-            { icon: '👑', fact: 'Firavun "büyük ev" demektir — kralın sarayıdır!' },
+            { icon: '👑', fact: 'Firavun "büyük ev" demektir!' },
             { icon: '🐺', fact: 'Anubis çakal başlı cenaze tanrısıydı.' },
             { icon: '🪬', fact: 'Mısırlılar nazarlıklara çok değer verirdi.' }
           ] }
@@ -854,7 +680,6 @@ const levels = {
 const encouragements = ['Süpersin! 🎉','Harika! ✨','Muhteşem! 🌟','Bravo! 👏','Aferin! 🎊','Çok iyi! 💫','Mükemmel! 🏆'];
 const catchComments = ['Hoppa! 😵','Yakalandık! 🫣','Koş! 💨','Dikkat! 😲','Neredeyse! 🙈'];
 
-/* ---------- Güç-up türleri ---------- */
 const powerupTypes = [
     { icon: '⚡', key: 'speed',     duration: 4, label: 'Hız Patlaması!' },
     { icon: '❄️', key: 'freeze',    duration: 3, label: 'Donduruldu!'    },
@@ -862,22 +687,18 @@ const powerupTypes = [
     { icon: '🔦', key: 'vision',    duration: 5, label: 'Gözün Açıldı!'  }
 ];
 
-/* HUD üst paneli bölgeleri (bu aralıklarda eşya/güç doğmasın) */
-const HUD_TOP = 150;        // üst HUD şeridi yüksekliği
-const MINIMAP_X = 780, MINIMAP_Y = 460; // alt-sağ minimap bölgesi
-
+const HUD_TOP = 150;
+const MINIMAP_X = 780, MINIMAP_Y = 460;
 function inSafeZone(x, y) {
     if (y < HUD_TOP) return false;
     if (x > MINIMAP_X && y > MINIMAP_Y) return false;
     return true;
 }
 
-/* ---------- Durum ---------- */
 const state = {
     civ: null, running: false, paused: false,
     floor: 1, elapsed: 0, totalElapsed: 0, alert: 0,
-    shakeT: 0, shakeMag: 0,
-    idleTime: 0, stunT: 0,
+    shakeT: 0, shakeMag: 0, idleTime: 0, stunT: 0,
     levelStars: [0, 0, 0],
     effects: { speed: 0, freeze: 0, invisible: 0, vision: 0 },
     combo: 0, comboT: 0, comboBest: 0
@@ -892,13 +713,10 @@ const player = {
 
 let items = [], particles = [], guards = [], footprints = [], confetti = [], powerups = [];
 
-/* ---------- Girdi ---------- */
 const keys = {}, pressed = {};
 window.addEventListener('keydown', e => {
-    // Input alanında yazarken oyun kontrolleri tetiklenmesin
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-
     if (!keys[e.code]) pressed[e.code] = true;
     keys[e.code] = true;
     if (e.code === 'Escape' && state.running) togglePause();
@@ -906,7 +724,6 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 
-/* ---------- Başlat ---------- */
 function initGame(civ) {
     state.civ = civ;
     state.floor = 1;
@@ -932,6 +749,12 @@ function initGame(civ) {
     updateComboUI();
     updateEffectsUI();
     document.getElementById('mpBadge').classList.toggle('active', isMultiplayer);
+
+    // MOBİL: oyun aktif class'ı + ölçekleme
+    document.body.classList.add('game-active');
+    requestAnimationFrame(fitGame);
+    setTimeout(fitGame, 150);
+
     loop();
 }
 
@@ -965,11 +788,9 @@ function spawnLevel() {
     for (let i = 0; i < lvl.count; i++) {
         const { x, y } = findSpawn(200, true);
         const pick = lvl.pool[i % lvl.pool.length];
-        items.push({ x, y, phase: Math.random() * Math.PI * 2, collected: false,
-                     icon: pick.icon, fact: pick.fact });
+        items.push({ x, y, phase: Math.random() * Math.PI * 2, collected: false, icon: pick.icon, fact: pick.fact });
     }
 
-    // Her bölümde 1-2 güç-up
     const puCount = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < puCount; i++) {
         const { x, y } = findSpawn(160, true);
@@ -999,12 +820,10 @@ function spawnLevel() {
     document.getElementById('objective').innerText = lvl.obj;
     updateHud();
 
-    // Multiplayer: host bölüm kurulumunu arkadaşa göndersin (aynı eşya/bekçi konumları)
     if (isMultiplayer && amHost) {
         netSend({
             type: 'levelInit',
-            floor: state.floor,
-            civ: state.civ,
+            floor: state.floor, civ: state.civ,
             difficulty: difficulty,
             timeLimit: state.timeLimit,
             items: items.map(it => ({ x:it.x, y:it.y, icon:it.icon, fact:it.fact, phase:it.phase })),
@@ -1014,7 +833,6 @@ function spawnLevel() {
     }
 }
 
-/* ---------- UI ---------- */
 function updateHud() {
     const lvl = levels[state.civ][state.floor - 1];
     const remain = items.filter(i => !i.collected).length;
@@ -1056,12 +874,8 @@ function showFact(msg) {
 function updateComboUI() {
     const el = document.getElementById('comboBox');
     if (!el) return;
-    if (state.combo >= 2) {
-        el.innerHTML = `🔥 ${state.combo}x KOMBO!`;
-        el.classList.add('show');
-    } else {
-        el.classList.remove('show');
-    }
+    if (state.combo >= 2) { el.innerHTML = `🔥 ${state.combo}x KOMBO!`; el.classList.add('show'); }
+    else { el.classList.remove('show'); }
 }
 
 function updateEffectsUI() {
@@ -1070,9 +884,7 @@ function updateEffectsUI() {
     let html = '';
     for (const pt of powerupTypes) {
         const t = state.effects[pt.key];
-        if (t > 0) {
-            html += `<div class="effect-chip">${pt.icon}<span class="t">${Math.ceil(t)}s</span></div>`;
-        }
+        if (t > 0) html += `<div class="effect-chip">${pt.icon}<span class="t">${Math.ceil(t)}s</span></div>`;
     }
     bar.innerHTML = html;
 }
@@ -1109,11 +921,11 @@ function returnToMenu() {
     document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
     document.getElementById('game-wrapper').style.display = 'none';
     document.getElementById('menu-screen').style.display = 'flex';
-    // MP oyun bayraklarını sıfırla (ama bağlantıyı kesme)
     isMultiplayer = false;
     amHost = false;
     remotePlayer = null;
     document.getElementById('mpBadge').classList.remove('active');
+    document.body.classList.remove('game-active');
     renderStarsOnMenu();
 }
 
@@ -1136,16 +948,13 @@ function victory() {
     const total = state.levelStars.reduce((a,b) => a+b, 0);
     const avg = Math.round(total / 3);
     document.getElementById('endTitle').innerText = '🎉 BAŞARDIN!';
-    document.getElementById('starsShown').innerHTML =
-        '★'.repeat(avg) + '<span class="dim">' + '★'.repeat(3 - avg) + '</span>';
+    document.getElementById('starsShown').innerHTML = '★'.repeat(avg) + '<span class="dim">' + '★'.repeat(3 - avg) + '</span>';
     document.getElementById('endText').innerText =
-        `Harikasın! Tüm bölümleri bitirdin. Toplam yıldız: ${total}/9 ⭐  Süre: ${Math.round(state.totalElapsed)}s. Büyük bir kâşifsin! 🏆`;
+        `Harikasın! Tüm bölümleri bitirdin. Toplam yıldız: ${total}/9 ⭐  Süre: ${Math.round(state.totalElapsed)}s.`;
     document.getElementById('endOverlay').classList.add('active');
-
     saveStars(state.civ, state.levelStars);
 }
 
-/* ---------- Yıldız kayıt ---------- */
 function saveStars(civ, arr) {
     try {
         const all = JSON.parse(localStorage.getItem('zy_stars') || '{}');
@@ -1171,7 +980,6 @@ function renderStarsOnMenu() {
     }
 }
 
-/* ---------- Partiküller & Konfeti ---------- */
 function burst(x, y, color, count) {
     count = count || 18;
     for (let i = 0; i < count; i++) {
@@ -1190,13 +998,10 @@ function spawnConfetti(n) {
     for (let i = 0; i < n; i++) {
         confetti.push({
             x: Math.random() * W, y: -20,
-            vx: (Math.random() - 0.5) * 3,
-            vy: 1 + Math.random() * 3,
+            vx: (Math.random() - 0.5) * 3, vy: 1 + Math.random() * 3,
             w: 6 + Math.random() * 6, h: 10 + Math.random() * 10,
-            rot: Math.random() * Math.PI * 2,
-            spin: (Math.random() - 0.5) * 0.2,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            life: 400
+            rot: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.2,
+            color: colors[Math.floor(Math.random() * colors.length)], life: 400
         });
     }
 }
@@ -1205,15 +1010,12 @@ function shake(mag, dur) {
     state.shakeT = Math.max(state.shakeT, dur || 0.35);
 }
 
-/* ---------- Güncelleme ---------- */
 let lastT = performance.now();
 
 function update(dt) {
-    // Efekt zamanlayıcıları
     for (const k in state.effects) if (state.effects[k] > 0) state.effects[k] -= dt;
     player.vision = player.baseVision + (state.effects.vision > 0 ? 130 : 0);
 
-    // Kombo sönümlemesi
     if (state.comboT > 0) {
         state.comboT -= dt;
         if (state.comboT <= 0) { state.combo = 0; updateComboUI(); }
@@ -1243,7 +1045,6 @@ function update(dt) {
     footprints.forEach(f => f.life -= 0.01);
     footprints = footprints.filter(f => f.life > 0);
 
-    // Topla
     let near = null;
     for (const it of items) {
         if (it.collected) continue;
@@ -1255,49 +1056,36 @@ function update(dt) {
     if (near && pressed['KeyE']) {
         pressed['KeyE'] = false;
         const idx = items.indexOf(near);
-
-        // Guest ise host'a istek gönder, host cevabı worldState ile gelir
         if (isMultiplayer && !amHost) {
             netSend({ type: 'collectReq', idx: idx });
-            // Optimistic: yerel olarak işaretle (host onaylayınca kalır, reddederse geri gelir)
             near.collected = true;
         } else {
-            // Solo veya host: direkt topla
             near.collected = true;
         }
-
-        // Görsel/sesli geri bildirim her durumda
         burst(near.x, near.y, '#ffd86b', 28);
         spawnConfetti(12);
         beep(880, 0.1, 'triangle', 0.12);
         setTimeout(() => beep(1320, 0.12, 'sine', 0.09), 50);
         const remaining = items.filter(i => !i.collected).length;
-
         state.combo += 1;
         state.comboT = 3.5;
         state.comboBest = Math.max(state.comboBest, state.combo);
         updateComboUI();
-
         const enc = encouragements[Math.floor(Math.random() * encouragements.length)];
         const comboTxt = state.combo >= 2 ? ` · 🔥${state.combo}x!` : '';
         toast(remaining > 0 ? `${enc} ${remaining} kaldı!${comboTxt}` : `${enc} Hepsi tamam!${comboTxt}`);
         showFact(near.fact);
         shake(4, 0.2);
         state.idleTime = 0;
-
-        // Bölüm sonu kararı: sadece solo veya host
         if (remaining === 0 && (!isMultiplayer || amHost)) { nextLevel(); return; }
     }
     pressed['KeyE'] = false;
 
-    // Güç-up'lar (dokununca otomatik alınır)
     for (let i = powerups.length - 1; i >= 0; i--) {
         const pu = powerups[i];
         pu.phase += 0.08;
         if (Math.hypot(player.x - pu.x, player.y - pu.y) < 30) {
-            if (isMultiplayer && !amHost) {
-                netSend({ type: 'pickupPuReq', idx: i });
-            }
+            if (isMultiplayer && !amHost) netSend({ type: 'pickupPuReq', idx: i });
             state.effects[pu.key] = pu.duration;
             burst(pu.x, pu.y, '#4cd6e0', 30);
             beep(1046, 0.1, 'triangle', 0.13);
@@ -1310,9 +1098,7 @@ function update(dt) {
 
     state.idleTime += dt;
 
-    // Bekçiler — sadece solo veya host çalıştırır (guest host'un durumunu alır)
     let seen = false;
-    // Dondurma iki oyuncunun da sahip olabileceği takım efekti sayılsın
     const frozen = state.effects.freeze > 0 || (isMultiplayer && remotePlayer && remotePlayer.freeze);
     const invisible = state.effects.invisible > 0;
 
@@ -1320,26 +1106,18 @@ function update(dt) {
         for (const g of guards) {
             g.t += dt;
             g.wobble += dt * 3;
-
             const sprintBonus = sprint ? 1.2 : 1;
             const seeDist = g.vision * sprintBonus;
-
-            // Hedefler: local + (MP ise) uzak oyuncu
             const targets = [];
-            if (!invisible && state.stunT <= 0) {
-                targets.push({ x: player.x, y: player.y, type: 'local' });
-            }
+            if (!invisible && state.stunT <= 0) targets.push({ x: player.x, y: player.y, type: 'local' });
             if (isMultiplayer && remotePlayer && !remotePlayer.inv && (remotePlayer.stunT || 0) <= 0) {
                 targets.push({ x: remotePlayer.x, y: remotePlayer.y, type: 'remote' });
             }
-
-            // En yakın hedefi bul
             let nearestT = null, nd = Infinity;
             for (const t of targets) {
                 const d = Math.hypot(g.x - t.x, g.y - t.y);
                 if (d < nd) { nd = d; nearestT = t; }
             }
-
             if (frozen) {
                 g.vx *= 0.6; g.vy *= 0.6;
                 g.state = 'patrol';
@@ -1351,30 +1129,21 @@ function update(dt) {
                 g.vy = Math.sin(ang) * g.speed;
             } else {
                 if (!g.waypoint || Math.hypot(g.waypoint.x - g.x, g.waypoint.y - g.y) < 25) {
-                    g.waypoint = { x: 80 + Math.random() * (W - 160),
-                                   y: HUD_TOP + 30 + Math.random() * (H - HUD_TOP - 100) };
+                    g.waypoint = { x: 80 + Math.random() * (W - 160), y: HUD_TOP + 30 + Math.random() * (H - HUD_TOP - 100) };
                 }
                 const ang = Math.atan2(g.waypoint.y - g.y, g.waypoint.x - g.x);
                 g.vx = Math.cos(ang) * g.speed * 0.45;
                 g.vy = Math.sin(ang) * g.speed * 0.45;
                 g.state = 'patrol';
             }
-
-            // Uyarı seviyesi (local oyuncuya göre)
             const dpLocal = Math.hypot(player.x - g.x, player.y - g.y);
-            if (!invisible && dpLocal < seeDist * 1.4) {
-                g.alertLevel = Math.min(1, (g.alertLevel || 0) + 2 * dt);
-            } else {
-                g.alertLevel = Math.max(0, (g.alertLevel || 0) - 0.5 * dt);
-            }
-
+            if (!invisible && dpLocal < seeDist * 1.4) g.alertLevel = Math.min(1, (g.alertLevel || 0) + 2 * dt);
+            else g.alertLevel = Math.max(0, (g.alertLevel || 0) - 0.5 * dt);
             if (!frozen) {
                 g.x += g.vx; g.y += g.vy;
                 g.x = Math.max(20, Math.min(W - 20, g.x));
                 g.y = Math.max(HUD_TOP - 10, Math.min(H - 20, g.y));
             }
-
-            // Yakala: local
             if (!invisible && !frozen && dpLocal < 28 && state.stunT <= 0) {
                 const c = catchComments[Math.floor(Math.random() * catchComments.length)];
                 toast(c);
@@ -1386,16 +1155,13 @@ function update(dt) {
                 state.combo = 0; state.comboT = 0; updateComboUI();
                 state.stunT = 0.8;
                 state.alert = 1;
-                // MP: arkadaşa "ben yakalandım" bildirimi
                 if (isMultiplayer) netSend({ type: 'friendCaught' });
             }
-
-            // Yakala: uzak oyuncu (sadece host karar verir)
             if (!frozen && isMultiplayer && amHost && remotePlayer && !remotePlayer.inv && (remotePlayer.stunT || 0) <= 0) {
                 const dpR = Math.hypot(g.x - remotePlayer.x, g.y - remotePlayer.y);
                 if (dpR < 28) {
                     netSend({ type: 'stun' });
-                    remotePlayer.stunT = 0.8; // yerel takip, yakında tekrar yakalanmasın
+                    remotePlayer.stunT = 0.8;
                     toast('😿 Arkadaşın yakalandı!');
                     beep(300, 0.1, 'sine', 0.06);
                 }
@@ -1408,21 +1174,9 @@ function update(dt) {
     state._effTick = (state._effTick || 0) + dt;
     if (state._effTick > 0.25) { state._effTick = 0; updateEffectsUI(); }
 
-    // Partiküller
-    particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        p.vx *= 0.96; p.vy *= 0.96;
-        p.life -= p.decay;
-    });
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vx *= 0.96; p.vy *= 0.96; p.life -= p.decay; });
     particles = particles.filter(p => p.life > 0);
-
-    // Konfeti
-    confetti.forEach(c => {
-        c.x += c.vx; c.y += c.vy;
-        c.vy += 0.08;
-        c.rot += c.spin;
-        c.life -= 1;
-    });
+    confetti.forEach(c => { c.x += c.vx; c.y += c.vy; c.vy += 0.08; c.rot += c.spin; c.life -= 1; });
     confetti = confetti.filter(c => c.life > 0 && c.y < H + 60);
 
     state.shakeT = Math.max(0, state.shakeT - dt);
@@ -1431,35 +1185,24 @@ function update(dt) {
     state.elapsed = performance.now() / 1000 - state.timeStart;
     updateHud();
 
-    // Multiplayer: 15 Hz'de pozisyonumu arkadaşa yolla
     if (isMultiplayer && conn && conn.open) {
         const now = performance.now() / 1000;
         if (now - lastNetSend > 1 / NET_HZ) {
             lastNetSend = now;
             netSend({
                 type: 'pos',
-                p: {
-                    x: player.x, y: player.y,
-                    facing: player.facing, bob: player.bob,
-                    civ: state.civ,
-                    stunT: state.stunT,
-                    inv: state.effects.invisible > 0,
-                    freeze: state.effects.freeze > 0
-                }
+                p: { x: player.x, y: player.y, facing: player.facing, bob: player.bob,
+                     civ: state.civ, stunT: state.stunT,
+                     inv: state.effects.invisible > 0, freeze: state.effects.freeze > 0 }
             });
-            // Host ayrıca dünya durumunu da yayar
             if (amHost) {
                 lastWorldSend = now;
                 netSend({
                     type: 'worldState',
-                    guards: guards.map(g => ({
-                        x: g.x, y: g.y, vx: g.vx, vy: g.vy,
-                        state: g.state, wobble: g.wobble, alertLevel: g.alertLevel
-                    })),
+                    guards: guards.map(g => ({ x: g.x, y: g.y, vx: g.vx, vy: g.vy, state: g.state, wobble: g.wobble, alertLevel: g.alertLevel })),
                     itemsCol: items.map(it => it.collected ? 1 : 0),
                     powerups: powerups.map(p => ({ x:p.x, y:p.y, key:p.key, phase:p.phase })),
-                    alert: state.alert,
-                    elapsed: state.elapsed
+                    alert: state.alert, elapsed: state.elapsed
                 });
             }
         }
@@ -1469,24 +1212,15 @@ function update(dt) {
 function nextLevel() {
     happyChime();
     spawnConfetti(80);
-
     const pct = state.elapsed / state.timeLimit;
     const stars = pct < 0.5 ? 3 : pct < 0.75 ? 2 : 1;
     state.levelStars[state.floor - 1] = stars;
     state.totalElapsed += state.elapsed;
-
-    // Multiplayer: arkadaşa "bölüm bitti" mesajı at (flashTransition senkron için)
-    if (isMultiplayer && amHost) {
-        netSend({ type: 'nextLevel', fromFloor: state.floor, stars: stars });
-    }
-
+    if (isMultiplayer && amHost) netSend({ type: 'nextLevel', fromFloor: state.floor, stars: stars });
     const starTxt = '★'.repeat(stars) + '☆'.repeat(3 - stars);
     if (state.floor < 3) {
         state.floor++;
-        flashTransition(`⭐ BÖLÜM ${state.floor - 1} TAMAM! ${starTxt}`, () => {
-            spawnLevel();
-            showStory();
-        });
+        flashTransition(`⭐ BÖLÜM ${state.floor - 1} TAMAM! ${starTxt}`, () => { spawnLevel(); showStory(); });
     } else {
         flashTransition(`🏆 SON BÖLÜM TAMAM! ${starTxt}`, victory);
     }
@@ -1500,14 +1234,9 @@ function flashTransition(msg, cb) {
     const btn = el.querySelector('.btn');
     btn.style.display = 'none';
     el.classList.add('active');
-    setTimeout(() => {
-        el.classList.remove('active');
-        btn.style.display = '';
-        cb();
-    }, 1600);
+    setTimeout(() => { el.classList.remove('active'); btn.style.display = ''; cb(); }, 1600);
 }
 
-/* ---------- Çizim ---------- */
 function draw() {
     let sx = 0, sy = 0;
     if (state.shakeT > 0) {
@@ -1517,7 +1246,6 @@ function draw() {
     ctx.save();
     ctx.translate(sx, sy);
 
-    // Arka plan
     const a = assets[state.civ];
     if (a.imgReady) {
         ctx.drawImage(a.img, 0, 0, W, H);
@@ -1533,13 +1261,11 @@ function draw() {
         drawBackdrop();
     }
 
-    // Ayak izleri
     footprints.forEach(f => {
         ctx.fillStyle = `rgba(255,255,255,${0.18 * f.life})`;
         ctx.beginPath(); ctx.arc(f.x, f.y + 10, 4, 0, Math.PI * 2); ctx.fill();
     });
 
-    // Eşyalar (emoji + parlama halesi)
     items.forEach(it => {
         if (it.collected) return;
         const d = Math.hypot(player.x - it.x, player.y - it.y);
@@ -1557,7 +1283,6 @@ function draw() {
         }
     });
 
-    // Güç-up'lar (mavi hale)
     powerups.forEach(pu => {
         const d = Math.hypot(player.x - pu.x, player.y - pu.y);
         if (d < player.vision + 100) {
@@ -1574,7 +1299,6 @@ function draw() {
         }
     });
 
-    // Bekçiler — buz efekti kendi ya da arkadaşın etkisine göre
     const frozenDraw = state.effects.freeze > 0 || (isMultiplayer && remotePlayer && remotePlayer.freeze);
     guards.forEach(g => {
         const d = Math.hypot(player.x - g.x, player.y - g.y);
@@ -1587,12 +1311,8 @@ function draw() {
             conGrd.addColorStop(0, g.state === 'chase' ? 'rgba(255,154,60,0.5)' : 'rgba(255,220,120,0.25)');
             conGrd.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = conGrd;
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.arc(0, 0, 100, -0.55, 0.55);
-            ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, 100, -0.55, 0.55); ctx.closePath(); ctx.fill();
             ctx.restore();
-
             if (frozenDraw) {
                 ctx.globalAlpha = 0.6;
                 ctx.fillStyle = 'rgba(150,220,255,0.4)';
@@ -1600,27 +1320,17 @@ function draw() {
                 ctx.globalAlpha = 1;
             }
             drawGuard(g);
-
-            // ? / ! uyarı göstergesi
-            if (g.state === 'chase') {
-                drawAlertSign(g.x, g.y - 22, '!', '#ff3b5c');
-            } else if ((g.alertLevel || 0) > 0.3) {
-                drawAlertSign(g.x, g.y - 22, '?', '#ffd86b');
-            }
+            if (g.state === 'chase') drawAlertSign(g.x, g.y - 22, '!', '#ff3b5c');
+            else if ((g.alertLevel || 0) > 0.3) drawAlertSign(g.x, g.y - 22, '?', '#ffd86b');
         }
     });
 
-    // Uzak oyuncu (multiplayer)
-    if (isMultiplayer && remotePlayer) {
-        drawRemotePlayer(remotePlayer);
-    }
+    if (isMultiplayer && remotePlayer) drawRemotePlayer(remotePlayer);
 
-    // Oyuncu (görünmezlik efekti şeffaflaştırır)
     if (state.effects.invisible > 0) ctx.globalAlpha = 0.45;
     drawPlayer();
     ctx.globalAlpha = 1;
 
-    // Pusula
     if (state.idleTime > 10) {
         const uncollected = items.filter(i => !i.collected);
         if (uncollected.length) {
@@ -1634,7 +1344,6 @@ function draw() {
         }
     }
 
-    // Partiküller
     particles.forEach(p => {
         ctx.globalAlpha = p.life;
         ctx.fillStyle = p.color;
@@ -1642,16 +1351,13 @@ function draw() {
     });
     ctx.globalAlpha = 1;
 
-    // Fog of war (çocuk dostu)
-    const fog = ctx.createRadialGradient(player.x, player.y, player.vision * 0.55,
-                                         player.x, player.y, player.vision);
+    const fog = ctx.createRadialGradient(player.x, player.y, player.vision * 0.55, player.x, player.y, player.vision);
     fog.addColorStop(0, 'rgba(0,0,0,0)');
     fog.addColorStop(0.7, 'rgba(20,10,40,0.35)');
     fog.addColorStop(1, 'rgba(20,10,40,0.88)');
     ctx.fillStyle = fog;
     ctx.fillRect(0, 0, W, H);
 
-    // Dikkat tintı (sarı-turuncu)
     if (state.alert > 0.3) {
         const vg = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.7);
         vg.addColorStop(0, 'rgba(255,154,60,0)');
@@ -1660,11 +1366,8 @@ function draw() {
         ctx.fillRect(0, 0, W, H);
     }
 
-    // Konfeti
     confetti.forEach(c => {
-        ctx.save();
-        ctx.translate(c.x, c.y);
-        ctx.rotate(c.rot);
+        ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot);
         ctx.fillStyle = c.color;
         ctx.fillRect(-c.w/2, -c.h/2, c.w, c.h);
         ctx.restore();
@@ -1678,27 +1381,20 @@ function drawPlayer() {
     const cx = player.x;
     const cy = player.y + Math.sin(player.bob) * 1.5;
     const accent = assets[state.civ].accent;
-
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath(); ctx.ellipse(player.x, player.y + 16, 14, 4, 0, 0, Math.PI*2); ctx.fill();
-
     ctx.fillStyle = '#ffe2c4';
     ctx.shadowColor = accent; ctx.shadowBlur = 14;
     ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI*2); ctx.fill();
     ctx.shadowBlur = 0;
-
     ctx.fillStyle = accent;
-    ctx.beginPath();
-    ctx.arc(cx, cy + 2, 13, 0, Math.PI, false);
-    ctx.closePath(); ctx.fill();
-
+    ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI, false); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#7a4a1e';
     ctx.beginPath(); ctx.ellipse(cx, cy - 9, 18, 3.5, 0, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#9b6332';
     ctx.fillRect(cx - 9, cy - 20, 18, 12);
     ctx.fillStyle = '#5a3616';
     ctx.fillRect(cx - 9, cy - 12, 18, 2.5);
-
     const ex = Math.cos(player.facing) * 1.5;
     const ey = Math.sin(player.facing) * 1.5;
     ctx.fillStyle = '#fff';
@@ -1707,47 +1403,30 @@ function drawPlayer() {
     ctx.fillStyle = '#222';
     ctx.beginPath(); ctx.arc(cx - 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(cx + 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
-
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 1.5;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI);
-    ctx.stroke();
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI); ctx.stroke();
 }
 
 function drawRemotePlayer(rp) {
     const cx = rp.x;
     const cy = rp.y + Math.sin(rp.bob || 0) * 1.5;
-    // Uzak oyuncunun rengi kendi uygarlığından gelsin, yoksa pembe
     const accent = (rp.civ && assets[rp.civ]) ? assets[rp.civ].accent : '#ff6b9d';
     const alpha = rp.inv ? 0.45 : 1;
-
     ctx.globalAlpha = alpha;
-
-    // Gölge
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath(); ctx.ellipse(rp.x, rp.y + 16, 14, 4, 0, 0, Math.PI*2); ctx.fill();
-
-    // Kafa
     ctx.fillStyle = '#ffe2c4';
     ctx.shadowColor = accent; ctx.shadowBlur = 14;
     ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI*2); ctx.fill();
     ctx.shadowBlur = 0;
-
-    // Gömlek (uygarlık rengi)
     ctx.fillStyle = accent;
     ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI, false); ctx.closePath(); ctx.fill();
-
-    // Şapka
     ctx.fillStyle = '#7a4a1e';
     ctx.beginPath(); ctx.ellipse(cx, cy - 9, 18, 3.5, 0, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#9b6332';
     ctx.fillRect(cx - 9, cy - 20, 18, 12);
     ctx.fillStyle = '#5a3616';
     ctx.fillRect(cx - 9, cy - 12, 18, 2.5);
-
-    // Gözler (yöne göre)
     const f = rp.facing || 0;
     const ex = Math.cos(f) * 1.5, ey = Math.sin(f) * 1.5;
     ctx.fillStyle = '#fff';
@@ -1756,15 +1435,8 @@ function drawRemotePlayer(rp) {
     ctx.fillStyle = '#222';
     ctx.beginPath(); ctx.arc(cx - 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(cx + 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
-
-    // Gülümseme
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 1.5; ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI);
-    ctx.stroke();
-
-    // "Arkadaş" etiketi başının üstünde
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI); ctx.stroke();
     ctx.font = 'bold 11px "Fredoka",system-ui';
     ctx.textAlign = 'center';
     ctx.fillStyle = accent;
@@ -1772,7 +1444,6 @@ function drawRemotePlayer(rp) {
     const label = 'ARKADAŞ';
     ctx.strokeText(label, cx, cy - 28);
     ctx.fillText(label, cx, cy - 28);
-
     ctx.globalAlpha = 1;
 }
 
@@ -1781,10 +1452,8 @@ function drawGuard(g) {
     const wobble = Math.sin(g.wobble) * 2;
     const bodyColor = chasing ? '#ff6b9d' : '#a77bc8';
     const bx = g.x, by = g.y + wobble;
-
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
     ctx.beginPath(); ctx.ellipse(g.x, g.y + 14, 11, 3, 0, 0, Math.PI*2); ctx.fill();
-
     ctx.fillStyle = bodyColor;
     ctx.beginPath();
     ctx.arc(bx, by - 2, 11, Math.PI, 0, false);
@@ -1792,9 +1461,7 @@ function drawGuard(g) {
     ctx.quadraticCurveTo(bx + 7, by + 4, bx + 4, by + 8);
     ctx.quadraticCurveTo(bx, by + 4, bx - 4, by + 8);
     ctx.quadraticCurveTo(bx - 7, by + 4, bx - 11, by + 7);
-    ctx.closePath();
-    ctx.fill();
-
+    ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.beginPath(); ctx.arc(bx - 3, by - 2, 2.8, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(bx + 3, by - 2, 2.8, 0, Math.PI*2); ctx.fill();
@@ -1802,7 +1469,6 @@ function drawGuard(g) {
     const gex = chasing ? 1 : 0, gey = chasing ? 1 : 0;
     ctx.beginPath(); ctx.arc(bx - 3 + gex, by - 2 + gey, 1.3, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(bx + 3 + gex, by - 2 + gey, 1.3, 0, Math.PI*2); ctx.fill();
-
     if (chasing) {
         ctx.fillStyle = '#2a1f4a';
         ctx.beginPath(); ctx.arc(bx, by + 2, 1.5, 0, Math.PI*2); ctx.fill();
@@ -1895,7 +1561,6 @@ function loop() {
     if (state.running) requestAnimationFrame(loop);
 }
 
-/* ---------- Menü arka planı ---------- */
 const bgCanvas = document.getElementById('bgCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 function resizeBg() {
@@ -1940,26 +1605,19 @@ window.closeStory = closeStory;
 window.togglePause = togglePause;
 window.returnToMenu = returnToMenu;
 
-/* =======================================================
-   AŞAMA 1: AĞ ALTYAPISI (PeerJS)
-   Bu aşamada sadece iki tarayıcının birbirine bağlandığını
-   kanıtlıyoruz. Oyun hâlâ solo çalışıyor.
-   ======================================================= */
+/* === PEER / MULTIPLAYER === */
+let peer = null;
+let conn = null;
+let roomCode = null;
+let isHost = false;
 
-let peer = null;      // PeerJS nesnesi
-let conn = null;      // Data channel bağlantısı
-let roomCode = null;  // 6 harfli oda kodu
-let isHost = false;   // Bu oyuncu host mu?
+let isMultiplayer = false;
+let amHost = false;
+let remotePlayer = null;
+const NET_HZ = 15;
+let lastNetSend = 0;
+let lastWorldSend = 0;
 
-/* --- Çok oyunculu oyun durumu (oyun içi) --- */
-let isMultiplayer = false;           // Şu an MP oyunda mıyız?
-let amHost = false;                  // Bu tarayıcı MP'de host mu?
-let remotePlayer = null;             // Uzak oyuncunun durumu (x,y,facing vs.)
-const NET_HZ = 15;                   // Pozisyon yayın sıklığı (saniyede)
-let lastNetSend = 0;                 // Son pozisyon yayını
-let lastWorldSend = 0;               // Son dünya durumu yayını (host)
-
-// Karışmayan 6 haneli kod: 0/O, 1/I/L gibi kolay karışanlar çıkarıldı
 function generateRoomCode() {
     const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
     let code = '';
@@ -1971,25 +1629,19 @@ function setMpStatus(html) {
     document.getElementById('mpStatus').innerHTML = html;
 }
 
-// Oda kodunu <b> etiketine tıklayarak panoya kopyalamak
 document.getElementById('mpStatus').addEventListener('click', (e) => {
     if (e.target.tagName !== 'B') return;
     const el = e.target;
     const code = el.textContent.trim();
     if (!code || code.length < 3) return;
-
     const setCopied = () => {
         const orig = el.textContent;
         el.textContent = '✓ KOPYALANDI';
-        setTimeout(() => {
-            if (el.isConnected) el.textContent = orig;
-        }, 1400);
+        setTimeout(() => { if (el.isConnected) el.textContent = orig; }, 1400);
     };
-
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(code).then(setCopied).catch(() => {});
     } else {
-        // Eski tarayıcılar için yedek
         const ta = document.createElement('textarea');
         ta.value = code;
         ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -2017,17 +1669,11 @@ function hostRoom() {
     isHost = true;
     setMpStatus('🔄 Oda kuruluyor...');
     setMpButtons({ host: false, join: false });
-
-    // 'zy-' ön eki koyuyoruz ki PeerJS public sunucusunda çakışma olmasın
     peer = new Peer('zy-' + roomCode, { debug: 1 });
-
     peer.on('open', id => {
         setMpStatus(`✅ Oda kuruldu! Kod: <b title="Kopyalamak için tıkla">${roomCode}</b> 📋 · arkadaşına gönder`);
     });
-    peer.on('connection', c => {
-        conn = c;
-        setupConn();
-    });
+    peer.on('connection', c => { conn = c; setupConn(); });
     peer.on('error', err => {
         console.error('Peer error:', err);
         setMpStatus('❌ Hata: ' + (err.type || err.message));
@@ -2043,26 +1689,19 @@ function joinRoom() {
         return;
     }
     const code = document.getElementById('joinCode').value.trim().toUpperCase();
-    if (code.length < 4) {
-        setMpStatus('⚠️ Geçerli bir oda kodu gir');
-        return;
-    }
+    if (code.length < 4) { setMpStatus('⚠️ Geçerli bir oda kodu gir'); return; }
     roomCode = code;
     isHost = false;
     setMpStatus('🔄 Bağlanıyor...');
     setMpButtons({ host: false, join: false });
-
     peer = new Peer({ debug: 1 });
-
     peer.on('open', () => {
         conn = peer.connect('zy-' + code, { reliable: true });
         setupConn();
     });
     peer.on('error', err => {
         console.error('Peer error:', err);
-        const msg = err.type === 'peer-unavailable'
-            ? 'Oda bulunamadı — kodu kontrol et'
-            : (err.type || err.message);
+        const msg = err.type === 'peer-unavailable' ? 'Oda bulunamadı — kodu kontrol et' : (err.type || err.message);
         setMpStatus('❌ ' + msg);
         setMpButtons({ host: true, join: true });
         peer = null;
@@ -2073,7 +1712,6 @@ function setupConn() {
     conn.on('open', () => {
         setMpStatus(`✅ ${isHost ? 'Arkadaşın' : 'Host'} bağlandı! Oda: <b>${roomCode}</b>`);
         setMpButtons({ host: false, join: false, disconnect: true });
-        // Tanışma mesajı
         conn.send({ type: 'hello', role: isHost ? 'host' : 'guest', t: Date.now() });
     });
     conn.on('data', data => {
@@ -2082,27 +1720,21 @@ function setupConn() {
             setMpStatus(`✅ ${who} merhaba dedi! Ping: ${Date.now() - data.t}ms`);
             return;
         }
-        // Diğer tüm mesajlar oyun içi
         handleNetMessage(data);
     });
     conn.on('close', () => {
         setMpStatus('⚠️ Bağlantı kesildi');
-        // Oyun içindeyse rozeti kırmızı yap + bildirim
         if (isMultiplayer && state.running) {
             const badge = document.getElementById('mpBadge');
             badge.innerHTML = '<span class="dot" style="background:#ff6b9d; box-shadow:0 0 6px #ff6b9d;"></span>⚠️ ARKADAŞ KOPTU';
             if (typeof toast === 'function') toast('⚠️ Arkadaşın koptu — tek başına devam');
-            // MP modundan çık ama oyuna devam (solo olarak)
             isMultiplayer = false;
             amHost = false;
             remotePlayer = null;
         }
         disconnectMp();
     });
-    conn.on('error', err => {
-        console.error('Conn error:', err);
-        setMpStatus('❌ Bağlantı hatası');
-    });
+    conn.on('error', err => { console.error('Conn error:', err); setMpStatus('❌ Bağlantı hatası'); });
 }
 
 function disconnectMp() {
@@ -2113,23 +1745,15 @@ function disconnectMp() {
     setMpButtons({ host: true, join: true, disconnect: false });
 }
 
-/* --- MP oyun başlatma + mesaj yönlendirme --- */
-
 function handleCivClick(civ) {
-    // Eğer lobide bir arkadaş bağlıysa, MP başlat
     if (conn && conn.open) {
-        if (!isHost) {
-            setMpStatus('⏳ Sadece oda kurucu oyunu başlatabilir');
-            return;
-        }
+        if (!isHost) { setMpStatus('⏳ Sadece oda kurucu oyunu başlatabilir'); return; }
         isMultiplayer = true;
         amHost = true;
         remotePlayer = null;
-        // Arkadaşa "başla" sinyali gönder
         netSend({ type: 'startGame', civ: civ, difficulty: difficulty });
         initGame(civ);
     } else {
-        // Tek kişilik
         isMultiplayer = false;
         amHost = false;
         remotePlayer = null;
@@ -2143,31 +1767,22 @@ function netSend(msg) {
     }
 }
 
-// Bağlantıda gelen her mesaj buraya düşer (setupConn içinden çağırılır)
 function handleNetMessage(data) {
     if (!data || !data.type) return;
     switch (data.type) {
-        case 'hello':
-            break;
-
+        case 'hello': break;
         case 'startGame':
-            // Host başla dedi, ben guest'im
             isMultiplayer = true;
             amHost = false;
             remotePlayer = null;
             difficulty = data.difficulty || 'easy';
-            document.querySelectorAll('.diff-btn').forEach(x => {
-                x.classList.toggle('active', x.dataset.diff === difficulty);
-            });
+            document.querySelectorAll('.diff-btn').forEach(x => x.classList.toggle('active', x.dataset.diff === difficulty));
             initGame(data.civ);
             break;
-
         case 'pos':
             remotePlayer = data.p;
             break;
-
         case 'levelInit':
-            // Host yeni bölüm kurdu — biz de aynı şekilde kuralım
             if (amHost) break;
             state.floor = data.floor;
             state.civ = data.civ;
@@ -2175,10 +1790,7 @@ function handleNetMessage(data) {
             state.timeStart = performance.now() / 1000;
             state.elapsed = 0;
             items = data.items.map(it => ({ ...it, collected: false }));
-            guards = data.guards.map(g => ({
-                ...g,
-                vx: 0, vy: 0, state: 'patrol', waypoint: null, t: 0, alertLevel: 0
-            }));
+            guards = data.guards.map(g => ({ ...g, vx: 0, vy: 0, state: 'patrol', waypoint: null, t: 0, alertLevel: 0 }));
             powerups = data.powerups.map(p => {
                 const pt = powerupTypes.find(t => t.key === p.key) || {};
                 return { ...p, ...pt };
@@ -2190,19 +1802,10 @@ function handleNetMessage(data) {
             }
             updateHud();
             break;
-
         case 'worldState':
-            // Host'un her frame yayınladığı dünya durumu
             if (amHost) break;
-            // Bekçileri güncelle
-            data.guards.forEach((gs, i) => {
-                if (guards[i]) Object.assign(guards[i], gs);
-            });
-            // Eşya toplanma bayrakları
-            data.itemsCol.forEach((c, i) => {
-                if (items[i]) items[i].collected = !!c;
-            });
-            // Güç-up listesi — host'tan gelen listeyi tam kopyala
+            data.guards.forEach((gs, i) => { if (guards[i]) Object.assign(guards[i], gs); });
+            data.itemsCol.forEach((c, i) => { if (items[i]) items[i].collected = !!c; });
             powerups = data.powerups.map(p => {
                 const pt = powerupTypes.find(t => t.key === p.key) || {};
                 const existing = powerups.find(x => Math.abs(x.x - p.x) < 2 && Math.abs(x.y - p.y) < 2);
@@ -2212,9 +1815,7 @@ function handleNetMessage(data) {
             state.elapsed = data.elapsed;
             state.timeStart = performance.now() / 1000 - state.elapsed;
             break;
-
         case 'collectReq':
-            // Guest topla dedi, host validate etsin
             if (!amHost) break;
             if (typeof data.idx === 'number' && items[data.idx] && !items[data.idx].collected) {
                 const it = items[data.idx];
@@ -2223,27 +1824,19 @@ function handleNetMessage(data) {
                     if (d < 60) {
                         it.collected = true;
                         burst(it.x, it.y, '#ffd86b', 18);
-                        if (items.every(i => i.collected)) {
-                            nextLevel();
-                        }
+                        if (items.every(i => i.collected)) nextLevel();
                     }
                 }
             }
             break;
-
         case 'pickupPuReq':
-            // Guest güç-up aldı
             if (!amHost) break;
-            if (typeof data.idx === 'number' && powerups[data.idx]) {
-                powerups.splice(data.idx, 1);
-            }
+            if (typeof data.idx === 'number' && powerups[data.idx]) powerups.splice(data.idx, 1);
             break;
-
         case 'stun':
-            // Host "seni yakaladık" dedi
             if (amHost) break;
-            const c = catchComments[Math.floor(Math.random() * catchComments.length)];
-            toast(c);
+            const cc = catchComments[Math.floor(Math.random() * catchComments.length)];
+            toast(cc);
             beep(260, 0.12, 'square', 0.09);
             setTimeout(() => beep(180, 0.14, 'square', 0.09), 60);
             shake(9, 0.35);
@@ -2253,28 +1846,19 @@ function handleNetMessage(data) {
             state.stunT = 0.8;
             state.alert = 1;
             break;
-
         case 'friendCaught':
             toast('😿 Arkadaşın yakalandı!');
             beep(300, 0.1, 'sine', 0.06);
             break;
-
         case 'nextLevel':
-            // Host bölüm geçişi başlattı
             if (amHost) break;
             happyChime();
             spawnConfetti(80);
             state.levelStars[data.fromFloor - 1] = data.stars;
             state.totalElapsed += state.elapsed;
             const starTxt = '★'.repeat(data.stars) + '☆'.repeat(3 - data.stars);
-            if (data.fromFloor < 3) {
-                flashTransition(`⭐ BÖLÜM ${data.fromFloor} TAMAM! ${starTxt}`, () => {
-                    // levelInit zaten geldi / gelecek, sadece hikâyeyi göster
-                    showStory();
-                });
-            } else {
-                flashTransition(`🏆 SON BÖLÜM TAMAM! ${starTxt}`, victory);
-            }
+            if (data.fromFloor < 3) flashTransition(`⭐ BÖLÜM ${data.fromFloor} TAMAM! ${starTxt}`, () => showStory());
+            else flashTransition(`🏆 SON BÖLÜM TAMAM! ${starTxt}`, victory);
             break;
     }
 }
@@ -2283,6 +1867,93 @@ window.handleCivClick = handleCivClick;
 window.hostRoom = hostRoom;
 window.joinRoom = joinRoom;
 window.disconnectMp = disconnectMp;
+
+/* ==== MOBİL v5: Ölçekleme + Dokunmatik ==== */
+function fitGame() {
+    if (!document.body.classList.contains('game-active')) return;
+    const scale = Math.min(window.innerWidth / 960, window.innerHeight / 600);
+    document.documentElement.style.setProperty('--gs', scale);
+}
+window.addEventListener('resize', fitGame);
+window.addEventListener('orientationchange', () => setTimeout(fitGame, 300));
+
+const jPad = document.getElementById('joyPad');
+const jStick = document.getElementById('joyStick');
+let jTouchId = null, jCenter = null;
+
+function setJKeys(nx, ny) {
+    keys['KeyW'] = keys['KeyA'] = keys['KeyS'] = keys['KeyD'] = false;
+    if (Math.hypot(nx, ny) < 0.3) return;
+    if (nx > 0.3) keys['KeyD'] = true;
+    if (nx < -0.3) keys['KeyA'] = true;
+    if (ny > 0.3) keys['KeyS'] = true;
+    if (ny < -0.3) keys['KeyW'] = true;
+}
+function moveJ(cx, cy) {
+    const dx = cx - jCenter.x, dy = cy - jCenter.y;
+    const maxR = 48, d = Math.hypot(dx, dy), c = Math.min(d, maxR);
+    const a = Math.atan2(dy, dx);
+    jStick.style.transform = `translate(calc(-50% + ${Math.cos(a) * c}px), calc(-50% + ${Math.sin(a) * c}px))`;
+    setJKeys((c / maxR) * Math.cos(a), (c / maxR) * Math.sin(a));
+}
+function endJ() {
+    jTouchId = null;
+    jStick.style.transform = 'translate(-50%, -50%)';
+    jPad.classList.remove('active');
+    setJKeys(0, 0);
+}
+jPad.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    jTouchId = t.identifier;
+    const r = jPad.getBoundingClientRect();
+    jCenter = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    jPad.classList.add('active');
+    moveJ(t.clientX, t.clientY);
+}, { passive: false });
+jPad.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) if (t.identifier === jTouchId) { moveJ(t.clientX, t.clientY); break; }
+}, { passive: false });
+jPad.addEventListener('touchend', (e) => {
+    for (const t of e.changedTouches) if (t.identifier === jTouchId) { endJ(); break; }
+});
+jPad.addEventListener('touchcancel', endJ);
+jPad.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    jTouchId = 'm';
+    const r = jPad.getBoundingClientRect();
+    jCenter = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    jPad.classList.add('active');
+    moveJ(e.clientX, e.clientY);
+    const mv = (ev) => { if (jTouchId === 'm') moveJ(ev.clientX, ev.clientY); };
+    const up = () => { endJ(); document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+});
+
+function bindTouchBtn(el, onDown, onUp) {
+    let active = false;
+    const d = (e) => { e.preventDefault(); if (active) return; active = true; el.classList.add('pressed'); onDown(); };
+    const u = () => { if (!active) return; active = false; el.classList.remove('pressed'); onUp(); };
+    el.addEventListener('touchstart', d, { passive: false });
+    el.addEventListener('touchend', u);
+    el.addEventListener('touchcancel', u);
+    el.addEventListener('mousedown', d);
+    el.addEventListener('mouseup', u);
+    el.addEventListener('mouseleave', u);
+}
+bindTouchBtn(document.getElementById('touchE'),
+    () => { if (!keys['KeyE']) pressed['KeyE'] = true; keys['KeyE'] = true; },
+    () => { keys['KeyE'] = false; });
+bindTouchBtn(document.getElementById('touchSprint'),
+    () => { keys['ShiftLeft'] = true; },
+    () => { keys['ShiftLeft'] = false; });
+
+window.addEventListener('blur', () => {
+    for (const k in keys) keys[k] = false;
+    endJ();
+});
 </script>
 </body>
 </html>
