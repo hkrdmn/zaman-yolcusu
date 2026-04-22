@@ -445,6 +445,46 @@
         .mp-controls { flex-direction: column; gap: 8px; }
         .mp-input { width: 160px; }
     }
+
+    /* === DİK MODDA YATAY ÇEVİR UYARISI === */
+    #rotateHint {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #5a3d8f 0%, #1f0f3a 100%);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff9c4;
+        text-align: center;
+        padding: 40px;
+        z-index: 999999;
+    }
+    #rotateHint .rot-icon {
+        font-size: 90px;
+        animation: rotateSpin 2.5s ease-in-out infinite;
+        margin-bottom: 20px;
+    }
+    #rotateHint .rot-text {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        line-height: 1.4;
+    }
+    #rotateHint .rot-sub {
+        margin-top: 14px;
+        font-size: 14px;
+        color: #ffb6c7;
+        font-weight: 500;
+        letter-spacing: 1px;
+    }
+    @keyframes rotateSpin {
+        0%, 100% { transform: rotate(-15deg); }
+        50% { transform: rotate(75deg); }
+    }
+    @media (orientation: portrait) and (max-width: 900px) {
+        body.game-active #rotateHint { display: flex; }
+    }
 </style>
 </head>
 <body>
@@ -453,6 +493,13 @@
 
 <!-- Sürüm etiketi (v5 görürsen son sürümsün) -->
 <div id="versionTag" style="position:fixed;top:4px;left:4px;font-size:11px;color:#a5e887;background:rgba(0,0,0,0.7);padding:3px 10px;border-radius:8px;z-index:99997;pointer-events:none;font-family:monospace;font-weight:700;">v5 MOBİL</div>
+
+<!-- Dik modda yatay çevir uyarısı -->
+<div id="rotateHint">
+    <div class="rot-icon">📱🔄</div>
+    <div class="rot-text">TELEFONU YATAY ÇEVİR</div>
+    <div class="rot-sub">Oyun yatay modda tam ekran çalışır 🎮</div>
+</div>
 
 <!-- Dokunmatik kontroller -->
 <div id="touchControls">
@@ -1270,30 +1317,70 @@ function draw() {
         if (it.collected) return;
         const d = Math.hypot(player.x - it.x, player.y - it.y);
         if (d < player.vision + 80) {
-            const pulse = 3 + Math.sin(it.phase) * 3;
-            const grd = ctx.createRadialGradient(it.x, it.y, 0, it.x, it.y, 40 + pulse);
-            grd.addColorStop(0, 'rgba(255,216,107,0.85)');
-            grd.addColorStop(0.5, 'rgba(255,216,107,0.35)');
-            grd.addColorStop(1, 'rgba(255,216,107,0)');
-            ctx.fillStyle = grd;
-            ctx.beginPath(); ctx.arc(it.x, it.y, 44 + pulse, 0, Math.PI * 2); ctx.fill();
-            ctx.font = (30 + pulse * 0.4) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui';
+            const pulse = 3 + Math.sin(it.phase) * 4;
+            const bob = Math.sin(performance.now() * 0.005 + it.phase) * 5;
+
+            // 1. Dış yumuşak ışık halesi (uzaktan görünür)
+            const outerGrd = ctx.createRadialGradient(it.x, it.y, 10, it.x, it.y, 60 + pulse);
+            outerGrd.addColorStop(0, 'rgba(76, 214, 224, 0.55)');
+            outerGrd.addColorStop(0.6, 'rgba(76, 214, 224, 0.2)');
+            outerGrd.addColorStop(1, 'rgba(76, 214, 224, 0)');
+            ctx.fillStyle = outerGrd;
+            ctx.beginPath(); ctx.arc(it.x, it.y, 60 + pulse, 0, Math.PI * 2); ctx.fill();
+
+            // 2. Koyu arka disk (arka plan rengi ne olursa olsun kontrast)
+            ctx.fillStyle = 'rgba(30, 15, 50, 0.82)';
+            ctx.beginPath(); ctx.arc(it.x, it.y, 26 + pulse * 0.3, 0, Math.PI * 2); ctx.fill();
+
+            // 3. Parlak turkuaz halka (dikkat çekici)
+            ctx.strokeStyle = '#4cd6e0';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(it.x, it.y, 26 + pulse * 0.3, 0, Math.PI * 2); ctx.stroke();
+
+            // 4. İkonu çiz
+            ctx.font = (34 + pulse * 0.3) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui';
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.fillText(it.icon, it.x, it.y);
+
+            // 5. Üstünde zıplayan sarı ok (işaret)
+            const arrowY = it.y - 40 + bob;
+            ctx.fillStyle = '#ffd86b';
+            ctx.strokeStyle = '#2a1f4a';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(it.x, arrowY + 7);
+            ctx.lineTo(it.x - 8, arrowY - 5);
+            ctx.lineTo(it.x + 8, arrowY - 5);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
         }
     });
 
     powerups.forEach(pu => {
         const d = Math.hypot(player.x - pu.x, player.y - pu.y);
         if (d < player.vision + 100) {
-            const pulse = 3 + Math.sin(pu.phase) * 3;
-            const grd = ctx.createRadialGradient(pu.x, pu.y, 0, pu.x, pu.y, 36 + pulse);
-            grd.addColorStop(0, 'rgba(76,214,224,0.9)');
-            grd.addColorStop(0.5, 'rgba(76,214,224,0.4)');
-            grd.addColorStop(1, 'rgba(76,214,224,0)');
-            ctx.fillStyle = grd;
-            ctx.beginPath(); ctx.arc(pu.x, pu.y, 40 + pulse, 0, Math.PI * 2); ctx.fill();
-            ctx.font = (26 + pulse * 0.3) + 'px "Apple Color Emoji","Segoe UI Emoji",system-ui';
+            const pulse = 3 + Math.sin(pu.phase) * 4;
+
+            // Pembe/mor ışık halesi (eşyalardan farklı renk)
+            const outerGrd = ctx.createRadialGradient(pu.x, pu.y, 8, pu.x, pu.y, 55 + pulse);
+            outerGrd.addColorStop(0, 'rgba(255, 107, 157, 0.6)');
+            outerGrd.addColorStop(0.6, 'rgba(255, 107, 157, 0.2)');
+            outerGrd.addColorStop(1, 'rgba(255, 107, 157, 0)');
+            ctx.fillStyle = outerGrd;
+            ctx.beginPath(); ctx.arc(pu.x, pu.y, 55 + pulse, 0, Math.PI * 2); ctx.fill();
+
+            // Koyu arka disk
+            ctx.fillStyle = 'rgba(30, 15, 50, 0.82)';
+            ctx.beginPath(); ctx.arc(pu.x, pu.y, 24 + pulse * 0.3, 0, Math.PI * 2); ctx.fill();
+
+            // Parlak pembe halka
+            ctx.strokeStyle = '#ff6b9d';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(pu.x, pu.y, 24 + pulse * 0.3, 0, Math.PI * 2); ctx.stroke();
+
+            // İkonu
+            ctx.font = (30 + pulse * 0.3) + 'px "Apple Color Emoji","Segoe UI Emoji",system-ui';
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.fillText(pu.icon, pu.x, pu.y);
         }
