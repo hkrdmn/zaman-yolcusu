@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaman Yolcusu: Macera Keşif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+    :root {
+        --primary: #ff6b9d;
+        --yellow: #ffd86b;
+        --orange: #ff9a3c;
+        --cyan: #4cd6e0;
+        --green: #a5e887;
+        --purple: #8a5ba8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #5a3d8f 0%, #3a245e 50%, #1f0f3a 100%);
+        color: #fff;
+        font-family: 'Fredoka', system-ui, sans-serif;
+        font-weight: 500;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    #bgCanvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* === MENÜ === */
+    #menu-screen {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.9s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-4deg); }
+        75% { transform: rotate(4deg); }
+    }
+    @keyframes sparkle {
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.12); }
+    }
+
+    .title {
+        font-size: 72px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        background: linear-gradient(180deg, #fff9c4 0%, #ffd86b 45%, #ff9a3c 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 4px 30px rgba(255, 216, 107, 0.5);
+        margin: 0;
+        animation: bounce 3s ease-in-out infinite;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        letter-spacing: 3px;
+        color: #ffb6c7;
+        margin-top: 4px;
+        font-weight: 600;
+    }
+
+    .difficulty {
+        display: flex;
+        gap: 10px;
+        margin-top: 26px;
+    }
+
+    .diff-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        color: #fff;
+        padding: 9px 22px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        letter-spacing: 2px;
+        font-weight: 600;
+        transition: all 0.25s;
+    }
+    .diff-btn:hover { background: rgba(255,255,255,0.14); }
+    .diff-btn.active {
+        background: linear-gradient(135deg, #ffd86b, #ff9a3c);
+        color: #2a1f4a;
+        border-color: transparent;
+        box-shadow: 0 6px 22px rgba(255, 154, 60, 0.5);
+    }
+
+    .civ-container {
+        display: flex;
+        gap: 24px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .civ-card {
+        width: 240px;
+        padding: 26px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 24px;
+        cursor: pointer;
+        transition: transform 0.35s cubic-bezier(.2,.8,.2,1), border-color 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+    .civ-card:hover {
+        transform: translateY(-8px) scale(1.03);
+        border-color: #ffd86b;
+        box-shadow: 0 24px 60px rgba(255, 216, 107, 0.3);
+    }
+    .civ-card:hover .civ-icon { animation: wiggle 0.6s ease-in-out; }
+
+    .civ-icon {
+        font-size: 56px;
+        margin-bottom: 10px;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .civ-card h3 {
+        margin: 6px 0;
+        letter-spacing: 2px;
+        color: #fff9c4;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .civ-card p {
+        color: #d4c8e5;
+        font-size: 13px;
+        margin: 4px 0 0;
+    }
+
+    .civ-stars {
+        margin-top: 12px;
+        font-size: 18px;
+        letter-spacing: 3px;
+        color: #ffd86b;
+    }
+    .civ-stars .dim { color: rgba(255, 255, 255, 0.15); }
+    .civ-stars .count {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 1px;
+    }
+
+    .hint {
+        margin-top: 36px;
+        color: #ffb6c7;
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+    .hint kbd {
+        display: inline-block;
+        padding: 4px 10px;
+        margin: 0 3px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff9c4;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* === OYUN === */
+    #game-wrapper {
+        display: none;
+        position: relative;
+        z-index: 2;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    canvas#gameCanvas {
+        display: block;
+        cursor: none;
+        background: #1a0f2e;
+    }
+
+    #hud {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        padding: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .hud-panel {
+        background: rgba(42, 31, 74, 0.82);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: 18px;
+        padding: 10px 18px;
+        min-width: 180px;
+    }
+
+    .hud-label {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #ffb6c7;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    #floorTitle {
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff9c4;
+        margin-top: 2px;
+    }
+
+    #objective {
+        font-size: 13px;
+        color: #fff;
+        margin-top: 4px;
+    }
+
+    .bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+    .bar > div {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+    #progBar > div { background: linear-gradient(90deg, #4cd6e0, #a5e887); width: 0%; }
+
+    #timerBox {
+        font-weight: 700;
+        font-size: 26px;
+        color: #fff9c4;
+        text-align: center;
+    }
+
+    #starPreview {
+        font-size: 18px;
+        letter-spacing: 3px;
+        color: #ffd86b;
+    }
+    #starPreview .dim { color: rgba(255, 255, 255, 0.15); }
+
+    #interaction-prompt {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #ffd86b, #ff9a3c);
+        color: #2a1f4a;
+        font-weight: 700;
+        padding: 12px 28px;
+        border-radius: 30px;
+        display: none;
+        font-size: 14px;
+        letter-spacing: 2px;
+        box-shadow: 0 8px 24px rgba(255, 154, 60, 0.5);
+        animation: pulse 1.2s infinite;
+        z-index: 6;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.08); }
+    }
+
+    #minimap {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        width: 160px;
+        height: 120px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        background: rgba(42, 31, 74, 0.7);
+        z-index: 5;
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(42, 31, 74, 0.92);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        z-index: 10;
+        padding: 40px;
+        animation: fadeIn 0.4s ease-out;
+    }
+    .overlay.active { display: flex; }
+
+    .overlay h2 {
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #fff9c4;
+        margin: 0 0 14px;
+    }
+
+    .overlay p {
+        max-width: 540px;
+        color: #fff;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .btn {
+        margin-top: 22px;
+        background: linear-gradient(135deg, #ffd86b, #ff9a3c);
+        border: none;
+        color: #2a1f4a;
+        padding: 14px 36px;
+        letter-spacing: 2px;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        border-radius: 30px;
+        transition: all 0.25s;
+        box-shadow: 0 6px 20px rgba(255, 154, 60, 0.4);
+    }
+    .btn:hover {
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 10px 30px rgba(255, 154, 60, 0.6);
+    }
+    .btn.secondary {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        box-shadow: none;
+    }
+    .btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+    }
+
+    #starsShown {
+        font-size: 64px;
+        letter-spacing: 6px;
+        margin: 12px 0;
+        animation: sparkle 1.5s ease-in-out infinite;
+    }
+    #starsShown .dim { color: rgba(255, 255, 255, 0.15); }
+
+    #factBubble {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        background: linear-gradient(135deg, #4cd6e0, #5cb8ff);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        max-width: 520px;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s, transform 0.4s;
+        z-index: 7;
+        box-shadow: 0 10px 30px rgba(76, 214, 224, 0.45);
+    }
+    #factBubble.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    #toast {
+        position: absolute;
+        top: 160px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        background: linear-gradient(135deg, #ff6b9d, #ffd86b);
+        color: #fff;
+        font-weight: 700;
+        padding: 10px 24px;
+        border-radius: 20px;
+        font-size: 15px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        z-index: 6;
+        box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Güç-up chip'leri */
+    #effectsBar {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        display: flex;
+        gap: 8px;
+        z-index: 5;
+        pointer-events: none;
+    }
+    .effect-chip {
+        background: rgba(76, 214, 224, 0.22);
+        border: 2px solid #4cd6e0;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 22px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 20px rgba(76, 214, 224, 0.35);
+        backdrop-filter: blur(10px);
+        animation: chipIn 0.3s ease-out;
+    }
+    @keyframes chipIn {
+        from { opacity: 0; transform: translateY(10px) scale(0.8); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .effect-chip .t {
+        font-size: 13px; font-weight: 700; color: #fff9c4;
+        min-width: 16px; text-align: center;
+    }
+
+    /* MP durum göstergesi (oyun içi) */
+    #mpBadge {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(76, 214, 224, 0.22);
+        border: 2px solid #4cd6e0;
+        color: #fff9c4;
+        padding: 4px 12px;
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        display: none;
+        z-index: 5;
+        pointer-events: none;
+        box-shadow: 0 2px 10px rgba(76, 214, 224, 0.3);
+    }
+    #mpBadge.active { display: block; }
+    #mpBadge .dot {
+        display: inline-block;
+        width: 8px; height: 8px;
+        background: #a5e887;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+        box-shadow: 0 0 6px #a5e887;
+        animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    /* Kombo göstergesi */
+    #comboBox {
+        position: absolute;
+        top: 118px;
+        left: 50%;
+        transform: translateX(-50%) scale(0.8);
+        background: linear-gradient(135deg, #ff6b9d, #ffd86b);
+        color: #fff;
+        font-weight: 700;
+        font-size: 18px;
+        padding: 10px 22px;
+        border-radius: 22px;
+        letter-spacing: 2px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s, transform 0.25s cubic-bezier(.2,1.4,.3,1);
+        z-index: 6;
+        box-shadow: 0 8px 24px rgba(255, 107, 157, 0.5);
+    }
+    #comboBox.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+    /* Multiplayer paneli */
+    .mp-panel {
+        margin-top: 28px;
+        padding: 18px 22px;
+        background: rgba(76, 214, 224, 0.08);
+        border: 2px solid rgba(76, 214, 224, 0.35);
+        border-radius: 18px;
+        max-width: 560px;
+        width: 100%;
+    }
+    .mp-title {
+        font-size: 13px;
+        letter-spacing: 3px;
+        color: #4cd6e0;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    .mp-controls {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .mp-btn {
+        background: rgba(76, 214, 224, 0.2);
+        border: 2px solid #4cd6e0;
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.2s;
+    }
+    .mp-btn:hover { background: #4cd6e0; color: #2a1f4a; }
+    .mp-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .mp-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-align: center;
+        width: 120px;
+        text-transform: uppercase;
+    }
+    .mp-input:focus { outline: none; border-color: #4cd6e0; }
+    .mp-status {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #d4c8e5;
+        min-height: 18px;
+    }
+    .mp-status b {
+        display: inline-block;
+        background: #ffd86b;
+        color: #2a1f4a;
+        padding: 2px 10px;
+        border-radius: 6px;
+        letter-spacing: 4px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: all;
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .mp-status b:hover {
+        transform: scale(1.06);
+        box-shadow: 0 4px 14px rgba(255, 216, 107, 0.5);
+    }
+    .mp-status b:active { transform: scale(0.96); }
+
+    @media (max-width: 860px) {
+        .title { font-size: 48px; letter-spacing: 2px; }
+        #minimap { width: 110px; height: 84px; }
+    }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- === MENÜ === -->
+<div id="menu-screen">
+    <h1 class="title">ZAMAN YOLCUSU</h1>
+    <div class="subtitle">✨ Macera Keşif Oyunu ✨</div>
+
+    <div class="difficulty">
+        <button class="diff-btn active" data-diff="easy">😊 KOLAY</button>
+        <button class="diff-btn" data-diff="normal">🎯 NORMAL</button>
+    </div>
+
+    <div class="civ-container">
+        <div class="civ-card" onclick="handleCivClick('mezopotamya')">
+            <div class="civ-icon">🏛️</div>
+            <h3>MEZOPOTAMYA</h3>
+            <p>Ziggurat'ın Sırları</p>
+            <div class="civ-stars" id="stars-mezopotamya"></div>
+        </div>
+        <div class="civ-card" onclick="handleCivClick('misir')">
+            <div class="civ-icon">🔺</div>
+            <h3>ANTİK MISIR</h3>
+            <p>Piramit Macerası</p>
+            <div class="civ-stars" id="stars-misir"></div>
+        </div>
+    </div>
+
+    <div class="mp-panel">
+        <div class="mp-title">🌐 İNTERNETTEN BİRLİKTE OYNA</div>
+        <div class="mp-controls">
+            <button class="mp-btn" id="hostBtn" onclick="hostRoom()">🏠 ODA KUR</button>
+            <input id="joinCode" class="mp-input" placeholder="KOD" maxlength="6">
+            <button class="mp-btn" id="joinBtn" onclick="joinRoom()">🚪 KATIL</button>
+            <button class="mp-btn" id="disconnectBtn" onclick="disconnectMp()" style="display:none;">❌ BAĞLANTIYI KES</button>
+        </div>
+        <div id="mpStatus" class="mp-status">Henüz bağlı değilsin — yalnız oynamak için bir uygarlık seç ↑</div>
+    </div>
+
+    <div class="hint">
+        <kbd>W A S D</kbd> HAREKET &nbsp;·&nbsp;
+        <kbd>E</kbd> TOPLA &nbsp;·&nbsp;
+        <kbd>SHIFT</kbd> KOŞ &nbsp;·&nbsp;
+        <kbd>ESC</kbd> MOLA
+        <div style="margin-top:12px; opacity:0.85;">
+            ⚡ Hız &nbsp; ❄️ Dondur &nbsp; 👻 Görünmez &nbsp; 🔦 Işık &nbsp; — güçleri topla!
+        </div>
+    </div>
+</div>
+
+<!-- === OYUN === -->
+<div id="game-wrapper">
+    <canvas id="gameCanvas" width="960" height="600"></canvas>
+
+    <div id="hud">
+        <div class="hud-panel">
+            <div class="hud-label">Bölüm</div>
+            <div id="floorTitle">—</div>
+            <div id="objective">—</div>
+            <div class="bar" id="progBar"><div></div></div>
+        </div>
+        <div class="hud-panel" style="text-align:center; min-width: 140px;">
+            <div class="hud-label">Zaman</div>
+            <div id="timerBox">00:00</div>
+        </div>
+        <div class="hud-panel" style="text-align:right;">
+            <div class="hud-label">Durum</div>
+            <div id="alertText" style="color:#a5e887; font-size:15px; font-weight:700;">😊 GÜVENLİ</div>
+            <div class="hud-label" style="margin-top:6px;">Yıldız Hedefi</div>
+            <div id="starPreview">★★★</div>
+        </div>
+    </div>
+
+    <div id="mpBadge"><span class="dot"></span>👥 ARKADAŞIN BAĞLI</div>
+    <div id="factBubble"></div>
+    <div id="comboBox"></div>
+    <div id="interaction-prompt">[ E ] TOPLA</div>
+    <div id="toast"></div>
+    <div id="effectsBar"></div>
+    <canvas id="minimap" width="160" height="120"></canvas>
+
+    <div class="overlay" id="storyOverlay">
+        <h2 id="storyTitle">BÖLÜM</h2>
+        <p id="storyText">—</p>
+        <button class="btn" onclick="closeStory()">🚀 BAŞLA</button>
+    </div>
+
+    <div class="overlay" id="pauseOverlay">
+        <h2>⏸️ MOLA</h2>
+        <p>Nefes al, hazır olduğunda devam et!</p>
+        <button class="btn" onclick="togglePause()">▶️ DEVAM</button>
+        <button class="btn secondary" onclick="returnToMenu()">🏠 ANA MENÜ</button>
+    </div>
+
+    <div class="overlay" id="endOverlay">
+        <h2 id="endTitle">🎉 TEBRİKLER!</h2>
+        <div id="starsShown">★★★</div>
+        <p id="endText">—</p>
+        <button class="btn" onclick="returnToMenu()">🏠 ANA MENÜ</button>
+    </div>
+</div>
+
+<script>
+/* =======================================================
+   ZAMAN YOLCUSU — Çocuklar İçin Macera Modu
+   ======================================================= */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const minimap = document.getElementById('minimap');
+const mctx = minimap.getContext('2d');
+const promptEl = document.getElementById('interaction-prompt');
+const toastEl = document.getElementById('toast');
+const factEl = document.getElementById('factBubble');
+
+const W = canvas.width, H = canvas.height;
+
+/* ---------- Zorluk ---------- */
+let difficulty = 'easy';
+document.querySelectorAll('.diff-btn').forEach(b => {
+    b.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        difficulty = b.dataset.diff;
+    });
+});
+const diffMods = {
+    easy:   { timeMul: 1.8, guardSpeed: 0.6, vision: 240 },
+    normal: { timeMul: 1.0, guardSpeed: 1.0, vision: 200 }
+};
+
+/* ---------- Varlıklar ---------- */
+const assets = {
+    mezopotamya: { img: new Image(), src: 'zigurat.jpeg', mp3: 'zigurat.mp3',
+                   bg: ['#7a5ba8','#3d2263','#ffd86b'], accent: '#4cd6e0' },
+    misir:       { img: new Image(), src: 'misir.jpeg',   mp3: 'misir.mp3',
+                   bg: ['#d4a574','#7a5024','#ffb347'], accent: '#ffcc00' }
+};
+Object.values(assets).forEach(a => {
+    a.imgReady = false; a.audio = null;
+    a.img.onload = () => a.imgReady = true;
+    a.img.onerror = () => a.imgReady = false;
+});
+
+/* ---------- Ses ---------- */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
+function beep(freq, dur, type, vol) {
+    try {
+        const a = ensureAudio();
+        const o = a.createOscillator(), g = a.createGain();
+        o.type = type || 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(vol || 0.15, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + (dur || 0.08));
+        o.connect(g); g.connect(a.destination);
+        o.start(); o.stop(a.currentTime + (dur || 0.08));
+    } catch(e) {}
+}
+function happyChime() {
+    beep(523, 0.1, 'triangle', 0.14);
+    setTimeout(() => beep(659, 0.1, 'triangle', 0.14), 90);
+    setTimeout(() => beep(784, 0.14, 'triangle', 0.14), 180);
+    setTimeout(() => beep(1046, 0.18, 'triangle', 0.12), 280);
+}
+function playMusic(civ) {
+    try {
+        assets[civ].audio = new Audio(assets[civ].mp3);
+        assets[civ].audio.loop = true;
+        assets[civ].audio.volume = 0.3;
+        assets[civ].audio.play().catch(() => {});
+    } catch(e) {}
+}
+function stopAllMusic() {
+    Object.values(assets).forEach(a => { if (a.audio) { a.audio.pause(); a.audio.currentTime = 0; } });
+}
+
+/* ---------- Bölümler (ikonlu + eğitici) ---------- */
+const levels = {
+    mezopotamya: [
+        { name: "Ziggurat Girişi",
+          obj: "Antik parçaları topla!",
+          count: 4, guards: 1, time: 90,
+          story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı. Onları bul, ama gölgelerden uzak dur!",
+          pool: [
+            { icon: '🛞', fact: 'Tekerlek 5000 yıl önce Mezopotamya\'da icat edildi!' },
+            { icon: '🏺', fact: 'Çömlekler suyu ve yiyeceği saklamak için kullanılırdı.' },
+            { icon: '📜', fact: 'Yazı ilk burada bulundu — buna çivi yazısı denir!' },
+            { icon: '🗿', fact: 'Ziggurat "gökyüzüne uzanan tapınak" demektir.' }
+          ] },
+        { name: "Yıldız Odası",
+          obj: "Gök parçalarını topla!",
+          count: 3, guards: 2, time: 85,
+          story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐ Tavanda yıldız haritaları var. Bulabilecek misin?",
+          pool: [
+            { icon: '⭐', fact: 'Burçlar (koç, boğa...) ilk burada bulundu!' },
+            { icon: '🌙', fact: 'Ay takvimini Mezopotamyalılar yaptı.' },
+            { icon: '☀️', fact: 'Güneş saatiyle zamanı ölçerlerdi.' }
+          ] },
+        { name: "Zirve Tapınağı",
+          obj: "Kutsal sırları bul!",
+          count: 3, guards: 2, time: 85,
+          story: "Kulenin en tepesindeyiz! 🗝️ Son kutsal eşyalar burada. Dikkat — bekçiler uyumuyor!",
+          pool: [
+            { icon: '🔑', fact: 'Eski anahtarlar tahta ya da bronzdan yapılırdı.' },
+            { icon: '👑', fact: 'Krallar tapınağa özel törenlerle girerdi.' },
+            { icon: '💎', fact: 'Lapis lazuli denen mavi taş çok kıymetliydi.' }
+          ] }
+    ],
+    misir: [
+        { name: "Piramit Girişi",
+          obj: "Hiyeroglifleri bul!",
+          count: 3, guards: 1, time: 90,
+          story: "Antik Mısır'a hoş geldin! 🔺 Piramitler firavunların kocaman mezarlarıydı. Bak bakalım ne bulacaksın!",
+          pool: [
+            { icon: '📜', fact: 'Hiyeroglif resim-yazıdır — her sembol bir anlam taşır!' },
+            { icon: '🔺', fact: 'En büyük piramit Giza\'dadır, 146 metre yüksekliğinde!' },
+            { icon: '👁️', fact: 'Horus\'un Gözü kötülüklerden korurdu.' }
+          ] },
+        { name: "Gizli Geçit",
+          obj: "Hazineleri topla!",
+          count: 4, guards: 2, time: 85,
+          story: "Duvarların arkasında gizli odalar! 💎 Altın skarabeleri bul ama muhafızlara yakalanma!",
+          pool: [
+            { icon: '🪲', fact: 'Skarabe böceği Mısır\'da şans getirirdi.' },
+            { icon: '💎', fact: 'Firavunlar altın ve mücevherlerle gömülürdü.' },
+            { icon: '🏺', fact: 'Kanopik kavanozlar mumyalamada kullanılırdı.' },
+            { icon: '🗝️', fact: 'Piramitlerde gizli tüneller vardır!' }
+          ] },
+        { name: "Kral Mezarı",
+          obj: "Kutsal sunağa ulaş!",
+          count: 3, guards: 2, time: 85,
+          story: "İşte firavunun mezar odası! 👑 Son görev: kutsal eşyaları topla. Şanslar!",
+          pool: [
+            { icon: '👑', fact: 'Firavun "büyük ev" demektir — kralın sarayıdır!' },
+            { icon: '🐺', fact: 'Anubis çakal başlı cenaze tanrısıydı.' },
+            { icon: '🪬', fact: 'Mısırlılar nazarlıklara çok değer verirdi.' }
+          ] }
+    ]
+};
+
+const encouragements = ['Süpersin! 🎉','Harika! ✨','Muhteşem! 🌟','Bravo! 👏','Aferin! 🎊','Çok iyi! 💫','Mükemmel! 🏆'];
+const catchComments = ['Hoppa! 😵','Yakalandık! 🫣','Koş! 💨','Dikkat! 😲','Neredeyse! 🙈'];
+
+/* ---------- Güç-up türleri ---------- */
+const powerupTypes = [
+    { icon: '⚡', key: 'speed',     duration: 4, label: 'Hız Patlaması!' },
+    { icon: '❄️', key: 'freeze',    duration: 3, label: 'Donduruldu!'    },
+    { icon: '👻', key: 'invisible', duration: 3, label: 'Görünmezsin!'  },
+    { icon: '🔦', key: 'vision',    duration: 5, label: 'Gözün Açıldı!'  }
+];
+
+/* HUD üst paneli bölgeleri (bu aralıklarda eşya/güç doğmasın) */
+const HUD_TOP = 150;        // üst HUD şeridi yüksekliği
+const MINIMAP_X = 780, MINIMAP_Y = 460; // alt-sağ minimap bölgesi
+
+function inSafeZone(x, y) {
+    if (y < HUD_TOP) return false;
+    if (x > MINIMAP_X && y > MINIMAP_Y) return false;
+    return true;
+}
+
+/* ---------- Durum ---------- */
+const state = {
+    civ: null, running: false, paused: false,
+    floor: 1, elapsed: 0, totalElapsed: 0, alert: 0,
+    shakeT: 0, shakeMag: 0,
+    idleTime: 0, stunT: 0,
+    levelStars: [0, 0, 0],
+    effects: { speed: 0, freeze: 0, invisible: 0, vision: 0 },
+    combo: 0, comboT: 0, comboBest: 0
+};
+
+const player = {
+    x: W/2, y: H/2, vx: 0, vy: 0,
+    size: 16, speed: 2.7, sprintMul: 1.7,
+    vision: 220, baseVision: 220,
+    facing: 0, bob: 0
+};
+
+let items = [], particles = [], guards = [], footprints = [], confetti = [], powerups = [];
+
+/* ---------- Girdi ---------- */
+const keys = {}, pressed = {};
+window.addEventListener('keydown', e => {
+    // Input alanında yazarken oyun kontrolleri tetiklenmesin
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+    if (!keys[e.code]) pressed[e.code] = true;
+    keys[e.code] = true;
+    if (e.code === 'Escape' && state.running) togglePause();
+    if (['KeyW','KeyA','KeyS','KeyD','KeyE','Space'].includes(e.code)) e.preventDefault();
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+/* ---------- Başlat ---------- */
+function initGame(civ) {
+    state.civ = civ;
+    state.floor = 1;
+    state.elapsed = 0;
+    state.totalElapsed = 0;
+    state.alert = 0;
+    state.running = true;
+    state.paused = false;
+    state.levelStars = [0, 0, 0];
+    state.effects = { speed: 0, freeze: 0, invisible: 0, vision: 0 };
+    state.combo = 0; state.comboT = 0; state.comboBest = 0;
+    player.baseVision = diffMods[difficulty].vision;
+    player.vision = player.baseVision;
+
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('game-wrapper').style.display = 'block';
+    assets[civ].img.src = assets[civ].src;
+    ensureAudio();
+    playMusic(civ);
+
+    spawnLevel();
+    showStory();
+    updateComboUI();
+    updateEffectsUI();
+    document.getElementById('mpBadge').classList.toggle('active', isMultiplayer);
+    loop();
+}
+
+function spawnLevel() {
+    const lvl = levels[state.civ][state.floor - 1];
+    const mod = diffMods[difficulty];
+    items = []; guards = []; particles = []; footprints = []; powerups = [];
+    player.x = W/2; player.y = H - 80;
+    player.vx = 0; player.vy = 0;
+    state.stunT = 0;
+    state.idleTime = 0;
+    state.alert = 0;
+    state.effects = { speed: 0, freeze: 0, invisible: 0, vision: 0 };
+    state.combo = 0; state.comboT = 0;
+
+    function findSpawn(minDist, skipItems) {
+        let x, y, tries = 0;
+        do {
+            x = 80 + Math.random() * (W - 160);
+            y = HUD_TOP + 20 + Math.random() * (H - HUD_TOP - 160);
+            tries++;
+            if (tries > 40) break;
+        } while (
+            !inSafeZone(x, y) ||
+            Math.hypot(x - player.x, y - player.y) < minDist ||
+            (skipItems && items.some(it => Math.hypot(x - it.x, y - it.y) < 80))
+        );
+        return { x, y };
+    }
+
+    for (let i = 0; i < lvl.count; i++) {
+        const { x, y } = findSpawn(200, true);
+        const pick = lvl.pool[i % lvl.pool.length];
+        items.push({ x, y, phase: Math.random() * Math.PI * 2, collected: false,
+                     icon: pick.icon, fact: pick.fact });
+    }
+
+    // Her bölümde 1-2 güç-up
+    const puCount = 1 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < puCount; i++) {
+        const { x, y } = findSpawn(160, true);
+        const pt = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
+        powerups.push({ x, y, phase: Math.random() * Math.PI * 2, ...pt });
+    }
+
+    for (let i = 0; i < lvl.guards; i++) {
+        guards.push({
+            x: 140 + Math.random() * (W - 280),
+            y: HUD_TOP + 40 + Math.random() * (H - HUD_TOP - 180),
+            vx: 0, vy: 0,
+            speed: (1.3 + state.floor * 0.15) * mod.guardSpeed,
+            vision: 110,
+            state: 'patrol', waypoint: null, t: 0,
+            wobble: Math.random() * Math.PI * 2,
+            alertLevel: 0
+        });
+    }
+
+    state.timeLimit = lvl.time * mod.timeMul;
+    state.timeStart = performance.now() / 1000;
+    state.elapsed = 0;
+    lastT = performance.now();
+
+    document.getElementById('floorTitle').innerText = lvl.name;
+    document.getElementById('objective').innerText = lvl.obj;
+    updateHud();
+
+    // Multiplayer: host bölüm kurulumunu arkadaşa göndersin (aynı eşya/bekçi konumları)
+    if (isMultiplayer && amHost) {
+        netSend({
+            type: 'levelInit',
+            floor: state.floor,
+            civ: state.civ,
+            difficulty: difficulty,
+            timeLimit: state.timeLimit,
+            items: items.map(it => ({ x:it.x, y:it.y, icon:it.icon, fact:it.fact, phase:it.phase })),
+            guards: guards.map(g => ({ x:g.x, y:g.y, speed:g.speed, vision:g.vision, wobble:g.wobble })),
+            powerups: powerups.map(p => ({ x:p.x, y:p.y, key:p.key, phase:p.phase }))
+        });
+    }
+}
+
+/* ---------- UI ---------- */
+function updateHud() {
+    const lvl = levels[state.civ][state.floor - 1];
+    const remain = items.filter(i => !i.collected).length;
+    const done = lvl.count - remain;
+    document.querySelector('#progBar > div').style.width = (done / lvl.count * 100) + '%';
+
+    const left = Math.max(0, Math.ceil(state.timeLimit - (performance.now()/1000 - state.timeStart)));
+    const mm = String(Math.floor(left / 60)).padStart(2, '0');
+    const ss = String(left % 60).padStart(2, '0');
+    document.getElementById('timerBox').innerText = `${mm}:${ss}`;
+
+    const alertEl = document.getElementById('alertText');
+    if (state.alert > 0.75) { alertEl.innerText = '🙀 SAKLAN!'; alertEl.style.color = '#ff9a3c'; }
+    else if (state.alert > 0.3) { alertEl.innerText = '👀 DİKKAT'; alertEl.style.color = '#ffd86b'; }
+    else { alertEl.innerText = '😊 GÜVENLİ'; alertEl.style.color = '#a5e887'; }
+
+    const pct = state.elapsed / state.timeLimit;
+    const stars = pct < 0.5 ? 3 : pct < 0.75 ? 2 : 1;
+    document.getElementById('starPreview').innerHTML =
+        '★'.repeat(stars) + '<span class="dim">' + '★'.repeat(3 - stars) + '</span>';
+
+    if (left <= 0) gameOver('Zaman bitti — bir dahaki sefere daha hızlı ol! 💪');
+}
+
+function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toastEl.classList.remove('show'), 1700);
+}
+
+function showFact(msg) {
+    factEl.textContent = '💡 ' + msg;
+    factEl.classList.add('show');
+    clearTimeout(showFact._t);
+    showFact._t = setTimeout(() => factEl.classList.remove('show'), 3800);
+}
+
+function updateComboUI() {
+    const el = document.getElementById('comboBox');
+    if (!el) return;
+    if (state.combo >= 2) {
+        el.innerHTML = `🔥 ${state.combo}x KOMBO!`;
+        el.classList.add('show');
+    } else {
+        el.classList.remove('show');
+    }
+}
+
+function updateEffectsUI() {
+    const bar = document.getElementById('effectsBar');
+    if (!bar) return;
+    let html = '';
+    for (const pt of powerupTypes) {
+        const t = state.effects[pt.key];
+        if (t > 0) {
+            html += `<div class="effect-chip">${pt.icon}<span class="t">${Math.ceil(t)}s</span></div>`;
+        }
+    }
+    bar.innerHTML = html;
+}
+
+function showStory() {
+    const lvl = levels[state.civ][state.floor - 1];
+    document.getElementById('storyTitle').innerText = `${state.floor}. BÖLÜM — ${lvl.name.toUpperCase()}`;
+    document.getElementById('storyText').innerText = lvl.story;
+    document.getElementById('storyOverlay').classList.add('active');
+    state.paused = true;
+}
+
+function closeStory() {
+    document.getElementById('storyOverlay').classList.remove('active');
+    state.paused = false;
+    state.timeStart = performance.now() / 1000 - state.elapsed;
+    lastT = performance.now();
+}
+
+function togglePause() {
+    if (!state.running) return;
+    state.paused = !state.paused;
+    document.getElementById('pauseOverlay').classList.toggle('active', state.paused);
+    if (!state.paused) {
+        state.timeStart = performance.now() / 1000 - state.elapsed;
+        lastT = performance.now();
+    }
+}
+
+function returnToMenu() {
+    state.running = false;
+    state.paused = false;
+    stopAllMusic();
+    document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
+    document.getElementById('game-wrapper').style.display = 'none';
+    document.getElementById('menu-screen').style.display = 'flex';
+    // MP oyun bayraklarını sıfırla (ama bağlantıyı kesme)
+    isMultiplayer = false;
+    amHost = false;
+    remotePlayer = null;
+    document.getElementById('mpBadge').classList.remove('active');
+    renderStarsOnMenu();
+}
+
+function gameOver(msg) {
+    state.running = false;
+    stopAllMusic();
+    document.getElementById('endTitle').innerText = '😢 TEKRAR DENE!';
+    document.getElementById('starsShown').innerHTML = '';
+    document.getElementById('endText').innerText = msg;
+    document.getElementById('endOverlay').classList.add('active');
+}
+
+function victory() {
+    state.running = false;
+    stopAllMusic();
+    happyChime();
+    setTimeout(happyChime, 300);
+    spawnConfetti(120);
+
+    const total = state.levelStars.reduce((a,b) => a+b, 0);
+    const avg = Math.round(total / 3);
+    document.getElementById('endTitle').innerText = '🎉 BAŞARDIN!';
+    document.getElementById('starsShown').innerHTML =
+        '★'.repeat(avg) + '<span class="dim">' + '★'.repeat(3 - avg) + '</span>';
+    document.getElementById('endText').innerText =
+        `Harikasın! Tüm bölümleri bitirdin. Toplam yıldız: ${total}/9 ⭐  Süre: ${Math.round(state.totalElapsed)}s. Büyük bir kâşifsin! 🏆`;
+    document.getElementById('endOverlay').classList.add('active');
+
+    saveStars(state.civ, state.levelStars);
+}
+
+/* ---------- Yıldız kayıt ---------- */
+function saveStars(civ, arr) {
+    try {
+        const all = JSON.parse(localStorage.getItem('zy_stars') || '{}');
+        const prev = all[civ] || [0, 0, 0];
+        all[civ] = arr.map((s, i) => Math.max(s, prev[i] || 0));
+        localStorage.setItem('zy_stars', JSON.stringify(all));
+    } catch(e) {}
+}
+function loadStars() {
+    try { return JSON.parse(localStorage.getItem('zy_stars') || '{}'); }
+    catch(e) { return {}; }
+}
+function renderStarsOnMenu() {
+    const all = loadStars();
+    for (const civ of ['mezopotamya', 'misir']) {
+        const arr = all[civ] || [0, 0, 0];
+        const tot = arr.reduce((a,b)=>a+b, 0);
+        const el = document.getElementById('stars-' + civ);
+        if (!el) continue;
+        let s = '';
+        for (let i = 0; i < 9; i++) s += i < tot ? '★' : '<span class="dim">★</span>';
+        el.innerHTML = s + `<span class="count">${tot}/9</span>`;
+    }
+}
+
+/* ---------- Partiküller & Konfeti ---------- */
+function burst(x, y, color, count) {
+    count = count || 18;
+    for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const s = 1 + Math.random() * 3;
+        particles.push({
+            x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+            life: 1, decay: 0.02 + Math.random() * 0.02,
+            color, size: 2 + Math.random() * 3
+        });
+    }
+}
+function spawnConfetti(n) {
+    n = n || 70;
+    const colors = ['#ff6b9d','#ffd86b','#4cd6e0','#a5e887','#ffb347','#c77dff'];
+    for (let i = 0; i < n; i++) {
+        confetti.push({
+            x: Math.random() * W, y: -20,
+            vx: (Math.random() - 0.5) * 3,
+            vy: 1 + Math.random() * 3,
+            w: 6 + Math.random() * 6, h: 10 + Math.random() * 10,
+            rot: Math.random() * Math.PI * 2,
+            spin: (Math.random() - 0.5) * 0.2,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            life: 400
+        });
+    }
+}
+function shake(mag, dur) {
+    state.shakeMag = Math.max(state.shakeMag, mag || 8);
+    state.shakeT = Math.max(state.shakeT, dur || 0.35);
+}
+
+/* ---------- Güncelleme ---------- */
+let lastT = performance.now();
+
+function update(dt) {
+    // Efekt zamanlayıcıları
+    for (const k in state.effects) if (state.effects[k] > 0) state.effects[k] -= dt;
+    player.vision = player.baseVision + (state.effects.vision > 0 ? 130 : 0);
+
+    // Kombo sönümlemesi
+    if (state.comboT > 0) {
+        state.comboT -= dt;
+        if (state.comboT <= 0) { state.combo = 0; updateComboUI(); }
+    }
+
+    let ix = 0, iy = 0;
+    if (keys['KeyW'] || keys['ArrowUp']) iy -= 1;
+    if (keys['KeyS'] || keys['ArrowDown']) iy += 1;
+    if (keys['KeyA'] || keys['ArrowLeft']) ix -= 1;
+    if (keys['KeyD'] || keys['ArrowRight']) ix += 1;
+    const len = Math.hypot(ix, iy) || 1; ix /= len; iy /= len;
+
+    const sprint = keys['ShiftLeft'] || keys['ShiftRight'];
+    const stunMul = state.stunT > 0 ? 0.35 : 1;
+    if (state.stunT > 0) state.stunT -= dt;
+    const effSpeed = state.effects.speed > 0 ? 1.7 : 1;
+    const spd = player.speed * (sprint ? player.sprintMul : 1) * stunMul * effSpeed;
+
+    player.vx += (ix * spd - player.vx) * 0.25;
+    player.vy += (iy * spd - player.vy) * 0.25;
+    player.x += player.vx; player.y += player.vy;
+    player.x = Math.max(player.size, Math.min(W - player.size, player.x));
+    player.y = Math.max(player.size, Math.min(H - player.size, player.y));
+    if (ix || iy) { player.facing = Math.atan2(iy, ix); player.bob += 0.35; }
+
+    if ((ix || iy) && Math.random() < 0.25) footprints.push({ x: player.x, y: player.y, life: 1 });
+    footprints.forEach(f => f.life -= 0.01);
+    footprints = footprints.filter(f => f.life > 0);
+
+    // Topla
+    let near = null;
+    for (const it of items) {
+        if (it.collected) continue;
+        it.phase += 0.08;
+        if (Math.hypot(player.x - it.x, player.y - it.y) < 44) near = it;
+    }
+    promptEl.style.display = near ? 'block' : 'none';
+
+    if (near && pressed['KeyE']) {
+        pressed['KeyE'] = false;
+        const idx = items.indexOf(near);
+
+        // Guest ise host'a istek gönder, host cevabı worldState ile gelir
+        if (isMultiplayer && !amHost) {
+            netSend({ type: 'collectReq', idx: idx });
+            // Optimistic: yerel olarak işaretle (host onaylayınca kalır, reddederse geri gelir)
+            near.collected = true;
+        } else {
+            // Solo veya host: direkt topla
+            near.collected = true;
+        }
+
+        // Görsel/sesli geri bildirim her durumda
+        burst(near.x, near.y, '#ffd86b', 28);
+        spawnConfetti(12);
+        beep(880, 0.1, 'triangle', 0.12);
+        setTimeout(() => beep(1320, 0.12, 'sine', 0.09), 50);
+        const remaining = items.filter(i => !i.collected).length;
+
+        state.combo += 1;
+        state.comboT = 3.5;
+        state.comboBest = Math.max(state.comboBest, state.combo);
+        updateComboUI();
+
+        const enc = encouragements[Math.floor(Math.random() * encouragements.length)];
+        const comboTxt = state.combo >= 2 ? ` · 🔥${state.combo}x!` : '';
+        toast(remaining > 0 ? `${enc} ${remaining} kaldı!${comboTxt}` : `${enc} Hepsi tamam!${comboTxt}`);
+        showFact(near.fact);
+        shake(4, 0.2);
+        state.idleTime = 0;
+
+        // Bölüm sonu kararı: sadece solo veya host
+        if (remaining === 0 && (!isMultiplayer || amHost)) { nextLevel(); return; }
+    }
+    pressed['KeyE'] = false;
+
+    // Güç-up'lar (dokununca otomatik alınır)
+    for (let i = powerups.length - 1; i >= 0; i--) {
+        const pu = powerups[i];
+        pu.phase += 0.08;
+        if (Math.hypot(player.x - pu.x, player.y - pu.y) < 30) {
+            if (isMultiplayer && !amHost) {
+                netSend({ type: 'pickupPuReq', idx: i });
+            }
+            state.effects[pu.key] = pu.duration;
+            burst(pu.x, pu.y, '#4cd6e0', 30);
+            beep(1046, 0.1, 'triangle', 0.13);
+            setTimeout(() => beep(1568, 0.12, 'sine', 0.1), 60);
+            toast('✨ ' + pu.label);
+            updateEffectsUI();
+            powerups.splice(i, 1);
+        }
+    }
+
+    state.idleTime += dt;
+
+    // Bekçiler — sadece solo veya host çalıştırır (guest host'un durumunu alır)
+    let seen = false;
+    // Dondurma iki oyuncunun da sahip olabileceği takım efekti sayılsın
+    const frozen = state.effects.freeze > 0 || (isMultiplayer && remotePlayer && remotePlayer.freeze);
+    const invisible = state.effects.invisible > 0;
+
+    if (!isMultiplayer || amHost) {
+        for (const g of guards) {
+            g.t += dt;
+            g.wobble += dt * 3;
+
+            const sprintBonus = sprint ? 1.2 : 1;
+            const seeDist = g.vision * sprintBonus;
+
+            // Hedefler: local + (MP ise) uzak oyuncu
+            const targets = [];
+            if (!invisible && state.stunT <= 0) {
+                targets.push({ x: player.x, y: player.y, type: 'local' });
+            }
+            if (isMultiplayer && remotePlayer && !remotePlayer.inv && (remotePlayer.stunT || 0) <= 0) {
+                targets.push({ x: remotePlayer.x, y: remotePlayer.y, type: 'remote' });
+            }
+
+            // En yakın hedefi bul
+            let nearestT = null, nd = Infinity;
+            for (const t of targets) {
+                const d = Math.hypot(g.x - t.x, g.y - t.y);
+                if (d < nd) { nd = d; nearestT = t; }
+            }
+
+            if (frozen) {
+                g.vx *= 0.6; g.vy *= 0.6;
+                g.state = 'patrol';
+            } else if (nearestT && nd < seeDist) {
+                g.state = 'chase';
+                if (nearestT.type === 'local') seen = true;
+                const ang = Math.atan2(nearestT.y - g.y, nearestT.x - g.x);
+                g.vx = Math.cos(ang) * g.speed;
+                g.vy = Math.sin(ang) * g.speed;
+            } else {
+                if (!g.waypoint || Math.hypot(g.waypoint.x - g.x, g.waypoint.y - g.y) < 25) {
+                    g.waypoint = { x: 80 + Math.random() * (W - 160),
+                                   y: HUD_TOP + 30 + Math.random() * (H - HUD_TOP - 100) };
+                }
+                const ang = Math.atan2(g.waypoint.y - g.y, g.waypoint.x - g.x);
+                g.vx = Math.cos(ang) * g.speed * 0.45;
+                g.vy = Math.sin(ang) * g.speed * 0.45;
+                g.state = 'patrol';
+            }
+
+            // Uyarı seviyesi (local oyuncuya göre)
+            const dpLocal = Math.hypot(player.x - g.x, player.y - g.y);
+            if (!invisible && dpLocal < seeDist * 1.4) {
+                g.alertLevel = Math.min(1, (g.alertLevel || 0) + 2 * dt);
+            } else {
+                g.alertLevel = Math.max(0, (g.alertLevel || 0) - 0.5 * dt);
+            }
+
+            if (!frozen) {
+                g.x += g.vx; g.y += g.vy;
+                g.x = Math.max(20, Math.min(W - 20, g.x));
+                g.y = Math.max(HUD_TOP - 10, Math.min(H - 20, g.y));
+            }
+
+            // Yakala: local
+            if (!invisible && !frozen && dpLocal < 28 && state.stunT <= 0) {
+                const c = catchComments[Math.floor(Math.random() * catchComments.length)];
+                toast(c);
+                beep(260, 0.12, 'square', 0.09);
+                setTimeout(() => beep(180, 0.14, 'square', 0.09), 60);
+                shake(9, 0.35);
+                player.x = W/2; player.y = H - 80;
+                player.vx = 0; player.vy = 0;
+                state.combo = 0; state.comboT = 0; updateComboUI();
+                state.stunT = 0.8;
+                state.alert = 1;
+                // MP: arkadaşa "ben yakalandım" bildirimi
+                if (isMultiplayer) netSend({ type: 'friendCaught' });
+            }
+
+            // Yakala: uzak oyuncu (sadece host karar verir)
+            if (!frozen && isMultiplayer && amHost && remotePlayer && !remotePlayer.inv && (remotePlayer.stunT || 0) <= 0) {
+                const dpR = Math.hypot(g.x - remotePlayer.x, g.y - remotePlayer.y);
+                if (dpR < 28) {
+                    netSend({ type: 'stun' });
+                    remotePlayer.stunT = 0.8; // yerel takip, yakında tekrar yakalanmasın
+                    toast('😿 Arkadaşın yakalandı!');
+                    beep(300, 0.1, 'sine', 0.06);
+                }
+            }
+        }
+        state.alert += (seen ? 1.2 : -0.6) * dt;
+        state.alert = Math.max(0, Math.min(1, state.alert));
+    }
+
+    state._effTick = (state._effTick || 0) + dt;
+    if (state._effTick > 0.25) { state._effTick = 0; updateEffectsUI(); }
+
+    // Partiküller
+    particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.96; p.vy *= 0.96;
+        p.life -= p.decay;
+    });
+    particles = particles.filter(p => p.life > 0);
+
+    // Konfeti
+    confetti.forEach(c => {
+        c.x += c.vx; c.y += c.vy;
+        c.vy += 0.08;
+        c.rot += c.spin;
+        c.life -= 1;
+    });
+    confetti = confetti.filter(c => c.life > 0 && c.y < H + 60);
+
+    state.shakeT = Math.max(0, state.shakeT - dt);
+    if (state.shakeT === 0) state.shakeMag = 0;
+
+    state.elapsed = performance.now() / 1000 - state.timeStart;
+    updateHud();
+
+    // Multiplayer: 15 Hz'de pozisyonumu arkadaşa yolla
+    if (isMultiplayer && conn && conn.open) {
+        const now = performance.now() / 1000;
+        if (now - lastNetSend > 1 / NET_HZ) {
+            lastNetSend = now;
+            netSend({
+                type: 'pos',
+                p: {
+                    x: player.x, y: player.y,
+                    facing: player.facing, bob: player.bob,
+                    civ: state.civ,
+                    stunT: state.stunT,
+                    inv: state.effects.invisible > 0,
+                    freeze: state.effects.freeze > 0
+                }
+            });
+            // Host ayrıca dünya durumunu da yayar
+            if (amHost) {
+                lastWorldSend = now;
+                netSend({
+                    type: 'worldState',
+                    guards: guards.map(g => ({
+                        x: g.x, y: g.y, vx: g.vx, vy: g.vy,
+                        state: g.state, wobble: g.wobble, alertLevel: g.alertLevel
+                    })),
+                    itemsCol: items.map(it => it.collected ? 1 : 0),
+                    powerups: powerups.map(p => ({ x:p.x, y:p.y, key:p.key, phase:p.phase })),
+                    alert: state.alert,
+                    elapsed: state.elapsed
+                });
+            }
+        }
+    }
+}
+
+function nextLevel() {
+    happyChime();
+    spawnConfetti(80);
+
+    const pct = state.elapsed / state.timeLimit;
+    const stars = pct < 0.5 ? 3 : pct < 0.75 ? 2 : 1;
+    state.levelStars[state.floor - 1] = stars;
+    state.totalElapsed += state.elapsed;
+
+    // Multiplayer: arkadaşa "bölüm bitti" mesajı at (flashTransition senkron için)
+    if (isMultiplayer && amHost) {
+        netSend({ type: 'nextLevel', fromFloor: state.floor, stars: stars });
+    }
+
+    const starTxt = '★'.repeat(stars) + '☆'.repeat(3 - stars);
+    if (state.floor < 3) {
+        state.floor++;
+        flashTransition(`⭐ BÖLÜM ${state.floor - 1} TAMAM! ${starTxt}`, () => {
+            spawnLevel();
+            showStory();
+        });
+    } else {
+        flashTransition(`🏆 SON BÖLÜM TAMAM! ${starTxt}`, victory);
+    }
+}
+
+function flashTransition(msg, cb) {
+    state.paused = true;
+    const el = document.getElementById('storyOverlay');
+    document.getElementById('storyTitle').innerText = msg;
+    document.getElementById('storyText').innerText = '';
+    const btn = el.querySelector('.btn');
+    btn.style.display = 'none';
+    el.classList.add('active');
+    setTimeout(() => {
+        el.classList.remove('active');
+        btn.style.display = '';
+        cb();
+    }, 1600);
+}
+
+/* ---------- Çizim ---------- */
+function draw() {
+    let sx = 0, sy = 0;
+    if (state.shakeT > 0) {
+        sx = (Math.random() - 0.5) * state.shakeMag;
+        sy = (Math.random() - 0.5) * state.shakeMag;
+    }
+    ctx.save();
+    ctx.translate(sx, sy);
+
+    // Arka plan
+    const a = assets[state.civ];
+    if (a.imgReady) {
+        ctx.drawImage(a.img, 0, 0, W, H);
+        ctx.fillStyle = 'rgba(255, 230, 180, 0.10)';
+        ctx.fillRect(0, 0, W, H);
+    } else {
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        g.addColorStop(0, a.bg[0]);
+        g.addColorStop(0.65, a.bg[1]);
+        g.addColorStop(1, '#1a0f2e');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        drawBackdrop();
+    }
+
+    // Ayak izleri
+    footprints.forEach(f => {
+        ctx.fillStyle = `rgba(255,255,255,${0.18 * f.life})`;
+        ctx.beginPath(); ctx.arc(f.x, f.y + 10, 4, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // Eşyalar (emoji + parlama halesi)
+    items.forEach(it => {
+        if (it.collected) return;
+        const d = Math.hypot(player.x - it.x, player.y - it.y);
+        if (d < player.vision + 80) {
+            const pulse = 3 + Math.sin(it.phase) * 3;
+            const grd = ctx.createRadialGradient(it.x, it.y, 0, it.x, it.y, 40 + pulse);
+            grd.addColorStop(0, 'rgba(255,216,107,0.85)');
+            grd.addColorStop(0.5, 'rgba(255,216,107,0.35)');
+            grd.addColorStop(1, 'rgba(255,216,107,0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath(); ctx.arc(it.x, it.y, 44 + pulse, 0, Math.PI * 2); ctx.fill();
+            ctx.font = (30 + pulse * 0.4) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(it.icon, it.x, it.y);
+        }
+    });
+
+    // Güç-up'lar (mavi hale)
+    powerups.forEach(pu => {
+        const d = Math.hypot(player.x - pu.x, player.y - pu.y);
+        if (d < player.vision + 100) {
+            const pulse = 3 + Math.sin(pu.phase) * 3;
+            const grd = ctx.createRadialGradient(pu.x, pu.y, 0, pu.x, pu.y, 36 + pulse);
+            grd.addColorStop(0, 'rgba(76,214,224,0.9)');
+            grd.addColorStop(0.5, 'rgba(76,214,224,0.4)');
+            grd.addColorStop(1, 'rgba(76,214,224,0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath(); ctx.arc(pu.x, pu.y, 40 + pulse, 0, Math.PI * 2); ctx.fill();
+            ctx.font = (26 + pulse * 0.3) + 'px "Apple Color Emoji","Segoe UI Emoji",system-ui';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(pu.icon, pu.x, pu.y);
+        }
+    });
+
+    // Bekçiler — buz efekti kendi ya da arkadaşın etkisine göre
+    const frozenDraw = state.effects.freeze > 0 || (isMultiplayer && remotePlayer && remotePlayer.freeze);
+    guards.forEach(g => {
+        const d = Math.hypot(player.x - g.x, player.y - g.y);
+        if (d < player.vision + 80) {
+            ctx.save();
+            ctx.translate(g.x, g.y);
+            const ang = Math.atan2(g.vy, g.vx);
+            ctx.rotate(ang);
+            const conGrd = ctx.createLinearGradient(0, 0, 100, 0);
+            conGrd.addColorStop(0, g.state === 'chase' ? 'rgba(255,154,60,0.5)' : 'rgba(255,220,120,0.25)');
+            conGrd.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = conGrd;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, 100, -0.55, 0.55);
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
+
+            if (frozenDraw) {
+                ctx.globalAlpha = 0.6;
+                ctx.fillStyle = 'rgba(150,220,255,0.4)';
+                ctx.beginPath(); ctx.arc(g.x, g.y, 18, 0, Math.PI*2); ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+            drawGuard(g);
+
+            // ? / ! uyarı göstergesi
+            if (g.state === 'chase') {
+                drawAlertSign(g.x, g.y - 22, '!', '#ff3b5c');
+            } else if ((g.alertLevel || 0) > 0.3) {
+                drawAlertSign(g.x, g.y - 22, '?', '#ffd86b');
+            }
+        }
+    });
+
+    // Uzak oyuncu (multiplayer)
+    if (isMultiplayer && remotePlayer) {
+        drawRemotePlayer(remotePlayer);
+    }
+
+    // Oyuncu (görünmezlik efekti şeffaflaştırır)
+    if (state.effects.invisible > 0) ctx.globalAlpha = 0.45;
+    drawPlayer();
+    ctx.globalAlpha = 1;
+
+    // Pusula
+    if (state.idleTime > 10) {
+        const uncollected = items.filter(i => !i.collected);
+        if (uncollected.length) {
+            let nearest = uncollected[0], minD = Infinity;
+            uncollected.forEach(it => {
+                const d = Math.hypot(player.x - it.x, player.y - it.y);
+                if (d < minD) { minD = d; nearest = it; }
+            });
+            const ang = Math.atan2(nearest.y - player.y, nearest.x - player.x);
+            drawCompass(player.x, player.y, ang);
+        }
+    }
+
+    // Partiküller
+    particles.forEach(p => {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // Fog of war (çocuk dostu)
+    const fog = ctx.createRadialGradient(player.x, player.y, player.vision * 0.55,
+                                         player.x, player.y, player.vision);
+    fog.addColorStop(0, 'rgba(0,0,0,0)');
+    fog.addColorStop(0.7, 'rgba(20,10,40,0.35)');
+    fog.addColorStop(1, 'rgba(20,10,40,0.88)');
+    ctx.fillStyle = fog;
+    ctx.fillRect(0, 0, W, H);
+
+    // Dikkat tintı (sarı-turuncu)
+    if (state.alert > 0.3) {
+        const vg = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.7);
+        vg.addColorStop(0, 'rgba(255,154,60,0)');
+        vg.addColorStop(1, `rgba(255,154,60,${0.3 * state.alert})`);
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    // Konfeti
+    confetti.forEach(c => {
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.rotate(c.rot);
+        ctx.fillStyle = c.color;
+        ctx.fillRect(-c.w/2, -c.h/2, c.w, c.h);
+        ctx.restore();
+    });
+
+    ctx.restore();
+    drawMinimap();
+}
+
+function drawPlayer() {
+    const cx = player.x;
+    const cy = player.y + Math.sin(player.bob) * 1.5;
+    const accent = assets[state.civ].accent;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(player.x, player.y + 16, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+
+    ctx.fillStyle = '#ffe2c4';
+    ctx.shadowColor = accent; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(cx, cy + 2, 13, 0, Math.PI, false);
+    ctx.closePath(); ctx.fill();
+
+    ctx.fillStyle = '#7a4a1e';
+    ctx.beginPath(); ctx.ellipse(cx, cy - 9, 18, 3.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#9b6332';
+    ctx.fillRect(cx - 9, cy - 20, 18, 12);
+    ctx.fillStyle = '#5a3616';
+    ctx.fillRect(cx - 9, cy - 12, 18, 2.5);
+
+    const ex = Math.cos(player.facing) * 1.5;
+    const ey = Math.sin(player.facing) * 1.5;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx - 4, cy, 3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 4, cy, 3, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#222';
+    ctx.beginPath(); ctx.arc(cx - 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
+
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI);
+    ctx.stroke();
+}
+
+function drawRemotePlayer(rp) {
+    const cx = rp.x;
+    const cy = rp.y + Math.sin(rp.bob || 0) * 1.5;
+    // Uzak oyuncunun rengi kendi uygarlığından gelsin, yoksa pembe
+    const accent = (rp.civ && assets[rp.civ]) ? assets[rp.civ].accent : '#ff6b9d';
+    const alpha = rp.inv ? 0.45 : 1;
+
+    ctx.globalAlpha = alpha;
+
+    // Gölge
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(rp.x, rp.y + 16, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+
+    // Kafa
+    ctx.fillStyle = '#ffe2c4';
+    ctx.shadowColor = accent; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Gömlek (uygarlık rengi)
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(cx, cy + 2, 13, 0, Math.PI, false); ctx.closePath(); ctx.fill();
+
+    // Şapka
+    ctx.fillStyle = '#7a4a1e';
+    ctx.beginPath(); ctx.ellipse(cx, cy - 9, 18, 3.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#9b6332';
+    ctx.fillRect(cx - 9, cy - 20, 18, 12);
+    ctx.fillStyle = '#5a3616';
+    ctx.fillRect(cx - 9, cy - 12, 18, 2.5);
+
+    // Gözler (yöne göre)
+    const f = rp.facing || 0;
+    const ex = Math.cos(f) * 1.5, ey = Math.sin(f) * 1.5;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx - 4, cy, 3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 4, cy, 3, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#222';
+    ctx.beginPath(); ctx.arc(cx - 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 4 + ex, cy + ey, 1.4, 0, Math.PI*2); ctx.fill();
+
+    // Gülümseme
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(cx, cy + 4, 3, 0.2 * Math.PI, 0.8 * Math.PI);
+    ctx.stroke();
+
+    // "Arkadaş" etiketi başının üstünde
+    ctx.font = 'bold 11px "Fredoka",system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = accent;
+    ctx.strokeStyle = '#2a1f4a'; ctx.lineWidth = 3;
+    const label = 'ARKADAŞ';
+    ctx.strokeText(label, cx, cy - 28);
+    ctx.fillText(label, cx, cy - 28);
+
+    ctx.globalAlpha = 1;
+}
+
+function drawGuard(g) {
+    const chasing = g.state === 'chase';
+    const wobble = Math.sin(g.wobble) * 2;
+    const bodyColor = chasing ? '#ff6b9d' : '#a77bc8';
+    const bx = g.x, by = g.y + wobble;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.ellipse(g.x, g.y + 14, 11, 3, 0, 0, Math.PI*2); ctx.fill();
+
+    ctx.fillStyle = bodyColor;
+    ctx.beginPath();
+    ctx.arc(bx, by - 2, 11, Math.PI, 0, false);
+    ctx.lineTo(bx + 11, by + 7);
+    ctx.quadraticCurveTo(bx + 7, by + 4, bx + 4, by + 8);
+    ctx.quadraticCurveTo(bx, by + 4, bx - 4, by + 8);
+    ctx.quadraticCurveTo(bx - 7, by + 4, bx - 11, by + 7);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(bx - 3, by - 2, 2.8, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx + 3, by - 2, 2.8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#222';
+    const gex = chasing ? 1 : 0, gey = chasing ? 1 : 0;
+    ctx.beginPath(); ctx.arc(bx - 3 + gex, by - 2 + gey, 1.3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx + 3 + gex, by - 2 + gey, 1.3, 0, Math.PI*2); ctx.fill();
+
+    if (chasing) {
+        ctx.fillStyle = '#2a1f4a';
+        ctx.beginPath(); ctx.arc(bx, by + 2, 1.5, 0, Math.PI*2); ctx.fill();
+    }
+}
+
+function drawAlertSign(x, y, char, color) {
+    const pulse = 1 + Math.sin(performance.now() * 0.012) * 0.15;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(pulse, pulse);
+    ctx.font = 'bold 22px "Fredoka",system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#2a1f4a';
+    ctx.strokeText(char, 0, 0);
+    ctx.fillStyle = color;
+    ctx.fillText(char, 0, 0);
+    ctx.restore();
+}
+
+function drawCompass(x, y, angle) {
+    const r = 48;
+    const ax = x + Math.cos(angle) * r;
+    const ay = y + Math.sin(angle) * r;
+    const pulse = Math.sin(performance.now() * 0.006) * 2;
+    ctx.save();
+    ctx.translate(ax, ay);
+    ctx.rotate(angle);
+    ctx.fillStyle = '#ffd86b';
+    ctx.shadowColor = '#ffd86b'; ctx.shadowBlur = 14 + pulse;
+    ctx.beginPath();
+    ctx.moveTo(10 + pulse, 0);
+    ctx.lineTo(-5, -6);
+    ctx.lineTo(-2, 0);
+    ctx.lineTo(-5, 6);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.shadowBlur = 0;
+}
+
+function drawBackdrop() {
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.strokeStyle = assets[state.civ].bg[2];
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 22; i++) {
+        ctx.beginPath();
+        ctx.moveTo((i/22) * W, 0);
+        ctx.lineTo((i/22) * W, H);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawMinimap() {
+    const sx = minimap.width / W;
+    const sy = minimap.height / H;
+    mctx.fillStyle = 'rgba(42, 31, 74, 0.75)';
+    mctx.fillRect(0, 0, minimap.width, minimap.height);
+    items.forEach(it => {
+        if (it.collected) return;
+        mctx.fillStyle = '#ffd86b';
+        mctx.beginPath();
+        mctx.arc(it.x * sx, it.y * sy, 3, 0, Math.PI*2);
+        mctx.fill();
+    });
+    powerups.forEach(pu => {
+        mctx.fillStyle = '#4cd6e0';
+        mctx.beginPath();
+        mctx.arc(pu.x * sx, pu.y * sy, 2.5, 0, Math.PI*2);
+        mctx.fill();
+    });
+    guards.forEach(g => {
+        mctx.fillStyle = g.state === 'chase' ? '#ff6b9d' : '#a77bc8';
+        mctx.fillRect(g.x * sx - 2, g.y * sy - 2, 4, 4);
+    });
+    mctx.fillStyle = assets[state.civ].accent;
+    mctx.beginPath();
+    mctx.arc(player.x * sx, player.y * sy, 3.5, 0, Math.PI*2);
+    mctx.fill();
+}
+
+function loop() {
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    if (state.running && !state.paused) update(dt);
+    if (state.running) draw();
+    if (state.running) requestAnimationFrame(loop);
+}
+
+/* ---------- Menü arka planı ---------- */
+const bgCanvas = document.getElementById('bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+function resizeBg() {
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeBg);
+resizeBg();
+
+const bgColors = ['#ffd86b','#ff6b9d','#4cd6e0','#a5e887','#c77dff'];
+const bgStars = Array.from({length: 140}, () => ({
+    x: Math.random() * bgCanvas.width,
+    y: Math.random() * bgCanvas.height,
+    r: 0.6 + Math.random() * 2,
+    s: 0.15 + Math.random() * 0.5,
+    t: Math.random() * Math.PI * 2,
+    color: bgColors[Math.floor(Math.random() * bgColors.length)]
+}));
+
+function bgLoop() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgStars.forEach(st => {
+        st.y += st.s;
+        st.t += 0.025;
+        if (st.y > bgCanvas.height) { st.y = -10; st.x = Math.random() * bgCanvas.width; }
+        const alpha = 0.5 + Math.sin(st.t) * 0.4;
+        bgCtx.globalAlpha = Math.max(0.15, alpha);
+        bgCtx.fillStyle = st.color;
+        bgCtx.beginPath();
+        bgCtx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+        bgCtx.fill();
+    });
+    bgCtx.globalAlpha = 1;
+    requestAnimationFrame(bgLoop);
+}
+bgLoop();
+
+renderStarsOnMenu();
+
+window.initGame = initGame;
+window.closeStory = closeStory;
+window.togglePause = togglePause;
+window.returnToMenu = returnToMenu;
+
+/* =======================================================
+   AŞAMA 1: AĞ ALTYAPISI (PeerJS)
+   Bu aşamada sadece iki tarayıcının birbirine bağlandığını
+   kanıtlıyoruz. Oyun hâlâ solo çalışıyor.
+   ======================================================= */
+
+let peer = null;      // PeerJS nesnesi
+let conn = null;      // Data channel bağlantısı
+let roomCode = null;  // 6 harfli oda kodu
+let isHost = false;   // Bu oyuncu host mu?
+
+/* --- Çok oyunculu oyun durumu (oyun içi) --- */
+let isMultiplayer = false;           // Şu an MP oyunda mıyız?
+let amHost = false;                  // Bu tarayıcı MP'de host mu?
+let remotePlayer = null;             // Uzak oyuncunun durumu (x,y,facing vs.)
+const NET_HZ = 15;                   // Pozisyon yayın sıklığı (saniyede)
+let lastNetSend = 0;                 // Son pozisyon yayını
+let lastWorldSend = 0;               // Son dünya durumu yayını (host)
+
+// Karışmayan 6 haneli kod: 0/O, 1/I/L gibi kolay karışanlar çıkarıldı
+function generateRoomCode() {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+}
+
+function setMpStatus(html) {
+    document.getElementById('mpStatus').innerHTML = html;
+}
+
+// Oda kodunu <b> etiketine tıklayarak panoya kopyalamak
+document.getElementById('mpStatus').addEventListener('click', (e) => {
+    if (e.target.tagName !== 'B') return;
+    const el = e.target;
+    const code = el.textContent.trim();
+    if (!code || code.length < 3) return;
+
+    const setCopied = () => {
+        const orig = el.textContent;
+        el.textContent = '✓ KOPYALANDI';
+        setTimeout(() => {
+            if (el.isConnected) el.textContent = orig;
+        }, 1400);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(setCopied).catch(() => {});
+    } else {
+        // Eski tarayıcılar için yedek
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); setCopied(); } catch(e) {}
+        document.body.removeChild(ta);
+    }
+});
+
+function setMpButtons({ host = true, join = true, disconnect = false }) {
+    document.getElementById('hostBtn').disabled = !host;
+    document.getElementById('joinBtn').disabled = !join;
+    document.getElementById('joinCode').disabled = !join;
+    document.getElementById('disconnectBtn').style.display = disconnect ? '' : 'none';
+}
+
+function hostRoom() {
+    if (peer) return;
+    if (typeof Peer === 'undefined') {
+        setMpStatus('❌ PeerJS yüklenmedi — internet bağlantını kontrol et');
+        return;
+    }
+    roomCode = generateRoomCode();
+    isHost = true;
+    setMpStatus('🔄 Oda kuruluyor...');
+    setMpButtons({ host: false, join: false });
+
+    // 'zy-' ön eki koyuyoruz ki PeerJS public sunucusunda çakışma olmasın
+    peer = new Peer('zy-' + roomCode, { debug: 1 });
+
+    peer.on('open', id => {
+        setMpStatus(`✅ Oda kuruldu! Kod: <b title="Kopyalamak için tıkla">${roomCode}</b> 📋 · arkadaşına gönder`);
+    });
+    peer.on('connection', c => {
+        conn = c;
+        setupConn();
+    });
+    peer.on('error', err => {
+        console.error('Peer error:', err);
+        setMpStatus('❌ Hata: ' + (err.type || err.message));
+        setMpButtons({ host: true, join: true });
+        peer = null;
+    });
+}
+
+function joinRoom() {
+    if (peer) return;
+    if (typeof Peer === 'undefined') {
+        setMpStatus('❌ PeerJS yüklenmedi — internet bağlantını kontrol et');
+        return;
+    }
+    const code = document.getElementById('joinCode').value.trim().toUpperCase();
+    if (code.length < 4) {
+        setMpStatus('⚠️ Geçerli bir oda kodu gir');
+        return;
+    }
+    roomCode = code;
+    isHost = false;
+    setMpStatus('🔄 Bağlanıyor...');
+    setMpButtons({ host: false, join: false });
+
+    peer = new Peer({ debug: 1 });
+
+    peer.on('open', () => {
+        conn = peer.connect('zy-' + code, { reliable: true });
+        setupConn();
+    });
+    peer.on('error', err => {
+        console.error('Peer error:', err);
+        const msg = err.type === 'peer-unavailable'
+            ? 'Oda bulunamadı — kodu kontrol et'
+            : (err.type || err.message);
+        setMpStatus('❌ ' + msg);
+        setMpButtons({ host: true, join: true });
+        peer = null;
+    });
+}
+
+function setupConn() {
+    conn.on('open', () => {
+        setMpStatus(`✅ ${isHost ? 'Arkadaşın' : 'Host'} bağlandı! Oda: <b>${roomCode}</b>`);
+        setMpButtons({ host: false, join: false, disconnect: true });
+        // Tanışma mesajı
+        conn.send({ type: 'hello', role: isHost ? 'host' : 'guest', t: Date.now() });
+    });
+    conn.on('data', data => {
+        if (data.type === 'hello') {
+            const who = data.role === 'host' ? 'Host' : 'Arkadaşın';
+            setMpStatus(`✅ ${who} merhaba dedi! Ping: ${Date.now() - data.t}ms`);
+            return;
+        }
+        // Diğer tüm mesajlar oyun içi
+        handleNetMessage(data);
+    });
+    conn.on('close', () => {
+        setMpStatus('⚠️ Bağlantı kesildi');
+        // Oyun içindeyse rozeti kırmızı yap + bildirim
+        if (isMultiplayer && state.running) {
+            const badge = document.getElementById('mpBadge');
+            badge.innerHTML = '<span class="dot" style="background:#ff6b9d; box-shadow:0 0 6px #ff6b9d;"></span>⚠️ ARKADAŞ KOPTU';
+            if (typeof toast === 'function') toast('⚠️ Arkadaşın koptu — tek başına devam');
+            // MP modundan çık ama oyuna devam (solo olarak)
+            isMultiplayer = false;
+            amHost = false;
+            remotePlayer = null;
+        }
+        disconnectMp();
+    });
+    conn.on('error', err => {
+        console.error('Conn error:', err);
+        setMpStatus('❌ Bağlantı hatası');
+    });
+}
+
+function disconnectMp() {
+    if (conn) { try { conn.close(); } catch(e){} }
+    if (peer) { try { peer.destroy(); } catch(e){} }
+    peer = null; conn = null; roomCode = null; isHost = false;
+    setMpStatus('Bağlantı kesildi — yeniden oda kurabilir veya katılabilirsin');
+    setMpButtons({ host: true, join: true, disconnect: false });
+}
+
+/* --- MP oyun başlatma + mesaj yönlendirme --- */
+
+function handleCivClick(civ) {
+    // Eğer lobide bir arkadaş bağlıysa, MP başlat
+    if (conn && conn.open) {
+        if (!isHost) {
+            setMpStatus('⏳ Sadece oda kurucu oyunu başlatabilir');
+            return;
+        }
+        isMultiplayer = true;
+        amHost = true;
+        remotePlayer = null;
+        // Arkadaşa "başla" sinyali gönder
+        netSend({ type: 'startGame', civ: civ, difficulty: difficulty });
+        initGame(civ);
+    } else {
+        // Tek kişilik
+        isMultiplayer = false;
+        amHost = false;
+        remotePlayer = null;
+        initGame(civ);
+    }
+}
+
+function netSend(msg) {
+    if (conn && conn.open) {
+        try { conn.send(msg); } catch(e) { console.error('send err', e); }
+    }
+}
+
+// Bağlantıda gelen her mesaj buraya düşer (setupConn içinden çağırılır)
+function handleNetMessage(data) {
+    if (!data || !data.type) return;
+    switch (data.type) {
+        case 'hello':
+            break;
+
+        case 'startGame':
+            // Host başla dedi, ben guest'im
+            isMultiplayer = true;
+            amHost = false;
+            remotePlayer = null;
+            difficulty = data.difficulty || 'easy';
+            document.querySelectorAll('.diff-btn').forEach(x => {
+                x.classList.toggle('active', x.dataset.diff === difficulty);
+            });
+            initGame(data.civ);
+            break;
+
+        case 'pos':
+            remotePlayer = data.p;
+            break;
+
+        case 'levelInit':
+            // Host yeni bölüm kurdu — biz de aynı şekilde kuralım
+            if (amHost) break;
+            state.floor = data.floor;
+            state.civ = data.civ;
+            state.timeLimit = data.timeLimit;
+            state.timeStart = performance.now() / 1000;
+            state.elapsed = 0;
+            items = data.items.map(it => ({ ...it, collected: false }));
+            guards = data.guards.map(g => ({
+                ...g,
+                vx: 0, vy: 0, state: 'patrol', waypoint: null, t: 0, alertLevel: 0
+            }));
+            powerups = data.powerups.map(p => {
+                const pt = powerupTypes.find(t => t.key === p.key) || {};
+                return { ...p, ...pt };
+            });
+            const lvl = levels[state.civ][state.floor - 1];
+            if (lvl) {
+                document.getElementById('floorTitle').innerText = lvl.name;
+                document.getElementById('objective').innerText = lvl.obj;
+            }
+            updateHud();
+            break;
+
+        case 'worldState':
+            // Host'un her frame yayınladığı dünya durumu
+            if (amHost) break;
+            // Bekçileri güncelle
+            data.guards.forEach((gs, i) => {
+                if (guards[i]) Object.assign(guards[i], gs);
+            });
+            // Eşya toplanma bayrakları
+            data.itemsCol.forEach((c, i) => {
+                if (items[i]) items[i].collected = !!c;
+            });
+            // Güç-up listesi — host'tan gelen listeyi tam kopyala
+            powerups = data.powerups.map(p => {
+                const pt = powerupTypes.find(t => t.key === p.key) || {};
+                const existing = powerups.find(x => Math.abs(x.x - p.x) < 2 && Math.abs(x.y - p.y) < 2);
+                return { ...p, ...pt, phase: existing ? existing.phase : p.phase };
+            });
+            state.alert = data.alert;
+            state.elapsed = data.elapsed;
+            state.timeStart = performance.now() / 1000 - state.elapsed;
+            break;
+
+        case 'collectReq':
+            // Guest topla dedi, host validate etsin
+            if (!amHost) break;
+            if (typeof data.idx === 'number' && items[data.idx] && !items[data.idx].collected) {
+                const it = items[data.idx];
+                if (remotePlayer) {
+                    const d = Math.hypot(remotePlayer.x - it.x, remotePlayer.y - it.y);
+                    if (d < 60) {
+                        it.collected = true;
+                        burst(it.x, it.y, '#ffd86b', 18);
+                        if (items.every(i => i.collected)) {
+                            nextLevel();
+                        }
+                    }
+                }
+            }
+            break;
+
+        case 'pickupPuReq':
+            // Guest güç-up aldı
+            if (!amHost) break;
+            if (typeof data.idx === 'number' && powerups[data.idx]) {
+                powerups.splice(data.idx, 1);
+            }
+            break;
+
+        case 'stun':
+            // Host "seni yakaladık" dedi
+            if (amHost) break;
+            const c = catchComments[Math.floor(Math.random() * catchComments.length)];
+            toast(c);
+            beep(260, 0.12, 'square', 0.09);
+            setTimeout(() => beep(180, 0.14, 'square', 0.09), 60);
+            shake(9, 0.35);
+            player.x = W/2; player.y = H - 80;
+            player.vx = 0; player.vy = 0;
+            state.combo = 0; state.comboT = 0; updateComboUI();
+            state.stunT = 0.8;
+            state.alert = 1;
+            break;
+
+        case 'friendCaught':
+            toast('😿 Arkadaşın yakalandı!');
+            beep(300, 0.1, 'sine', 0.06);
+            break;
+
+        case 'nextLevel':
+            // Host bölüm geçişi başlattı
+            if (amHost) break;
+            happyChime();
+            spawnConfetti(80);
+            state.levelStars[data.fromFloor - 1] = data.stars;
+            state.totalElapsed += state.elapsed;
+            const starTxt = '★'.repeat(data.stars) + '☆'.repeat(3 - data.stars);
+            if (data.fromFloor < 3) {
+                flashTransition(`⭐ BÖLÜM ${data.fromFloor} TAMAM! ${starTxt}`, () => {
+                    // levelInit zaten geldi / gelecek, sadece hikâyeyi göster
+                    showStory();
+                });
+            } else {
+                flashTransition(`🏆 SON BÖLÜM TAMAM! ${starTxt}`, victory);
+            }
+            break;
+    }
+}
+
+window.handleCivClick = handleCivClick;
+window.hostRoom = hostRoom;
+window.joinRoom = joinRoom;
+window.disconnectMp = disconnectMp;
+</script>
+</body>
+</html>
