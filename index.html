@@ -627,8 +627,8 @@ document.querySelectorAll('.diff-btn').forEach(b => {
     });
 });
 const diffMods = {
-    easy:   { timeMul: 1.8, guardSpeed: 0.6, vision: 240 },
-    normal: { timeMul: 1.0, guardSpeed: 1.0, vision: 200 }
+    easy:   { timeMul: 1.35, guardSpeed: 0.8,  vision: 220 },
+    normal: { timeMul: 0.95, guardSpeed: 1.15, vision: 195 }
 };
 
 const assets = {
@@ -675,23 +675,23 @@ function stopAllMusic() {
 
 const levels = {
     mezopotamya: [
-        { name: "Ziggurat Girişi", obj: "Antik parçaları topla!", count: 4, guards: 1, time: 90,
-          story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı.",
+        { name: "Ziggurat Girişi", obj: "Antik parçaları topla!", count: 6, guards: 2, time: 110,
+          story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı. Tüm bu koridorlarda gezin, parçaları bul ama gölgeli bekçilere dikkat!",
           pool: [
             { icon: '🛞', fact: 'Tekerlek 5000 yıl önce Mezopotamya\'da icat edildi!' },
             { icon: '🏺', fact: 'Çömlekler suyu ve yiyeceği saklamak için kullanılırdı.' },
             { icon: '📜', fact: 'Yazı ilk burada bulundu — buna çivi yazısı denir!' },
             { icon: '🗿', fact: 'Ziggurat "gökyüzüne uzanan tapınak" demektir.' }
           ] },
-        { name: "Yıldız Odası", obj: "Gök parçalarını topla!", count: 3, guards: 2, time: 85,
-          story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐",
+        { name: "Yıldız Odası", obj: "Gök parçalarını topla!", count: 6, guards: 3, time: 110,
+          story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐ Bu odada saklanan yıldız haritaları ve gök taşları bekçi sayısı arttığı için daha zor. Hızlı ol!",
           pool: [
             { icon: '⭐', fact: 'Burçlar ilk burada bulundu!' },
             { icon: '🌙', fact: 'Ay takvimini Mezopotamyalılar yaptı.' },
             { icon: '☀️', fact: 'Güneş saatiyle zamanı ölçerlerdi.' }
           ] },
-        { name: "Zirve Tapınağı", obj: "Kutsal sırları bul!", count: 3, guards: 2, time: 85,
-          story: "Kulenin en tepesindeyiz! 🗝️ Son kutsal eşyalar burada.",
+        { name: "Zirve Tapınağı", obj: "Kutsal sırları bul!", count: 7, guards: 3, time: 115,
+          story: "Kulenin en tepesindeyiz! 🗝️ En fazla sır ve en fazla bekçi burada. Bu son sınav — dikkatli ve hızlı ol!",
           pool: [
             { icon: '🔑', fact: 'Eski anahtarlar tahta ya da bronzdan yapılırdı.' },
             { icon: '👑', fact: 'Krallar tapınağa özel törenlerle girerdi.' },
@@ -699,23 +699,23 @@ const levels = {
           ] }
     ],
     misir: [
-        { name: "Piramit Girişi", obj: "Hiyeroglifleri bul!", count: 3, guards: 1, time: 90,
-          story: "Antik Mısır'a hoş geldin! 🔺",
+        { name: "Piramit Girişi", obj: "Hiyeroglifleri bul!", count: 6, guards: 2, time: 110,
+          story: "Antik Mısır'a hoş geldin! 🔺 Piramit geniş koridorlarla dolu, hiyeroglifleri bulmak zaman alıyor. Muhafızlar da uyanık!",
           pool: [
             { icon: '📜', fact: 'Hiyeroglif resim-yazıdır!' },
             { icon: '🔺', fact: 'En büyük piramit 146 metre yüksekliğinde!' },
             { icon: '👁️', fact: 'Horus\'un Gözü kötülüklerden korurdu.' }
           ] },
-        { name: "Gizli Geçit", obj: "Hazineleri topla!", count: 4, guards: 2, time: 85,
-          story: "Duvarların arkasında gizli odalar! 💎",
+        { name: "Gizli Geçit", obj: "Hazineleri topla!", count: 7, guards: 3, time: 115,
+          story: "Duvarların arkasında gizli odalar! 💎 Altın skarabeler ve kutsal kavanozlar burada — ama 3 muhafız var. Hepsinden kaç!",
           pool: [
             { icon: '🪲', fact: 'Skarabe böceği Mısır\'da şans getirirdi.' },
             { icon: '💎', fact: 'Firavunlar altın ve mücevherlerle gömülürdü.' },
             { icon: '🏺', fact: 'Kanopik kavanozlar mumyalamada kullanılırdı.' },
             { icon: '🗝️', fact: 'Piramitlerde gizli tüneller vardır!' }
           ] },
-        { name: "Kral Mezarı", obj: "Kutsal sunağa ulaş!", count: 3, guards: 2, time: 85,
-          story: "İşte firavunun mezar odası! 👑",
+        { name: "Kral Mezarı", obj: "Kutsal sunağa ulaş!", count: 6, guards: 3, time: 110,
+          story: "İşte firavunun mezar odası! 👑 Son görev en zoru — tüm kutsal eşyaları topla ve canın yanmadan çık!",
           pool: [
             { icon: '👑', fact: 'Firavun "büyük ev" demektir!' },
             { icon: '🐺', fact: 'Anubis çakal başlı cenaze tanrısıydı.' },
@@ -838,7 +838,8 @@ function spawnLevel() {
         items.push({ x, y, phase: Math.random() * Math.PI * 2, collected: false, icon: pick.icon, fact: pick.fact });
     }
 
-    const puCount = 1 + Math.floor(Math.random() * 2);
+    // Her bölümde 2-3 güç-up (zorluk arttı, daha çok yardım)
+    const puCount = 2 + Math.floor(Math.random() * 2);
     for (let i = 0; i < puCount; i++) {
         const { x, y } = findSpawn(160, true);
         const pt = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
