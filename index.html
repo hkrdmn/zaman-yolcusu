@@ -423,11 +423,24 @@
     }
     #touchSprint {
         bottom: max(60px, env(safe-area-inset-bottom, 20px) + 50px);
-        right: calc(max(16px, env(safe-area-inset-right, 0px)) + 112px);
-        width: 76px; height: 76px;
-        background: rgba(76, 214, 224, 0.6);
-        border: 3px solid #4cd6e0; font-size: 30px;
+        right: calc(max(16px, env(safe-area-inset-right, 0px)) + 118px);
+        width: 92px; height: 92px;
+        background: linear-gradient(135deg, #4cd6e0, #5cb8ff);
+        border: 3px solid #fff;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        line-height: 1;
+        box-shadow: 0 6px 20px rgba(76, 214, 224, 0.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
     }
+    #touchSprint .sprint-emoji { font-size: 30px; line-height: 1; }
+    #touchSprint .sprint-label { font-size: 12px; letter-spacing: 1px; }
     .touch-btn.pressed { transform: scale(0.9); filter: brightness(1.2); }
 
     @media (max-width: 980px) {
@@ -504,7 +517,7 @@
 <!-- Dokunmatik kontroller -->
 <div id="touchControls">
     <div id="joyPad"><div id="joyStick"></div></div>
-    <button id="touchSprint" class="touch-btn">🏃</button>
+    <button id="touchSprint" class="touch-btn"><span class="sprint-emoji">💨</span><span class="sprint-label">HIZ</span></button>
     <button id="touchE" class="touch-btn">E</button>
 </div>
 
@@ -547,7 +560,7 @@
     <div class="hint">
         <kbd>W A S D</kbd> HAREKET &nbsp;·&nbsp;
         <kbd>E</kbd> TOPLA &nbsp;·&nbsp;
-        <kbd>SHIFT</kbd> KOŞ &nbsp;·&nbsp;
+        <kbd>SHIFT / 💨 HIZ</kbd> KOŞ &nbsp;·&nbsp;
         <kbd>ESC</kbd> MOLA
         <div style="margin-top:12px; opacity:0.85;">
             ⚡ Hız &nbsp; ❄️ Dondur &nbsp; 👻 Görünmez &nbsp; 🔦 Işık &nbsp; — güçleri topla!
@@ -679,7 +692,7 @@ function stopAllMusic() {
 
 const levels = {
     mezopotamya: [
-        { name: "Ziggurat Girişi", obj: "Antik parçaları topla!", count: 10, guards: 3, time: 150,
+        { name: "Ziggurat Girişi", obj: "Antik parçaları topla!", count: 10, guards: 3, time: 210,
           story: "Ziggurat, eski Mezopotamya'da kocaman bir tapınak kulesiydi! 🏛️ İçinde antik parçalar saklı. Tüm bu koridorlarda gezin, parçaları bul ama gölgeli bekçilere dikkat!",
           pool: [
             { icon: '🛞', fact: 'Tekerlek 5000 yıl önce Mezopotamya\'da icat edildi!' },
@@ -687,14 +700,14 @@ const levels = {
             { icon: '📜', fact: 'Yazı ilk burada bulundu — buna çivi yazısı denir!' },
             { icon: '🗿', fact: 'Ziggurat "gökyüzüne uzanan tapınak" demektir.' }
           ] },
-        { name: "Yıldız Odası", obj: "Gök parçalarını topla!", count: 11, guards: 4, time: 160,
+        { name: "Yıldız Odası", obj: "Gök parçalarını topla!", count: 11, guards: 4, time: 220,
           story: "Mezopotamyalılar gökyüzünü ilk inceleyenlerdi! ⭐ Bu odada saklanan yıldız haritaları ve gök taşları bekçi sayısı arttığı için daha zor. Hızlı ol!",
           pool: [
             { icon: '⭐', fact: 'Burçlar ilk burada bulundu!' },
             { icon: '🌙', fact: 'Ay takvimini Mezopotamyalılar yaptı.' },
             { icon: '☀️', fact: 'Güneş saatiyle zamanı ölçerlerdi.' }
           ] },
-        { name: "Zirve Tapınağı", obj: "Kutsal sırları bul!", count: 12, guards: 4, time: 170,
+        { name: "Zirve Tapınağı", obj: "Kutsal sırları bul!", count: 12, guards: 4, time: 230,
           story: "Kulenin en tepesindeyiz! 🗝️ En fazla sır ve en fazla bekçi burada. Bu son sınav — dikkatli ve hızlı ol!",
           pool: [
             { icon: '🔑', fact: 'Eski anahtarlar tahta ya da bronzdan yapılırdı.' },
@@ -703,14 +716,14 @@ const levels = {
           ] }
     ],
     misir: [
-        { name: "Piramit Girişi", obj: "Hiyeroglifleri bul!", count: 10, guards: 3, time: 150,
+        { name: "Piramit Girişi", obj: "Hiyeroglifleri bul!", count: 10, guards: 3, time: 210,
           story: "Antik Mısır'a hoş geldin! 🔺 Piramit geniş koridorlarla dolu, hiyeroglifleri bulmak zaman alıyor. Muhafızlar da uyanık!",
           pool: [
             { icon: '📜', fact: 'Hiyeroglif resim-yazıdır!' },
             { icon: '🔺', fact: 'En büyük piramit 146 metre yüksekliğinde!' },
             { icon: '👁️', fact: 'Horus\'un Gözü kötülüklerden korurdu.' }
           ] },
-        { name: "Gizli Geçit", obj: "Hazineleri topla!", count: 12, guards: 4, time: 170,
+        { name: "Gizli Geçit", obj: "Hazineleri topla!", count: 12, guards: 4, time: 230,
           story: "Duvarların arkasında gizli odalar! 💎 Altın skarabeler ve kutsal kavanozlar burada — ama 3 muhafız var. Hepsinden kaç!",
           pool: [
             { icon: '🪲', fact: 'Skarabe böceği Mısır\'da şans getirirdi.' },
@@ -718,7 +731,7 @@ const levels = {
             { icon: '🏺', fact: 'Kanopik kavanozlar mumyalamada kullanılırdı.' },
             { icon: '🗝️', fact: 'Piramitlerde gizli tüneller vardır!' }
           ] },
-        { name: "Kral Mezarı", obj: "Kutsal sunağa ulaş!", count: 11, guards: 4, time: 160,
+        { name: "Kral Mezarı", obj: "Kutsal sunağa ulaş!", count: 11, guards: 4, time: 220,
           story: "İşte firavunun mezar odası! 👑 Son görev en zoru — tüm kutsal eşyaları topla ve canın yanmadan çık!",
           pool: [
             { icon: '👑', fact: 'Firavun "büyük ev" demektir!' },
@@ -756,7 +769,7 @@ const state = {
 
 const player = {
     x: W/2, y: H/2, vx: 0, vy: 0,
-    size: 16, speed: 2.7, sprintMul: 1.7,
+    size: 16, speed: 3.2, sprintMul: 2.0,
     vision: 220, baseVision: 220,
     facing: 0, bob: 0
 };
@@ -1780,6 +1793,32 @@ function setMpButtons({ host = true, join = true, disconnect = false }) {
     document.getElementById('disconnectBtn').style.display = disconnect ? '' : 'none';
 }
 
+// PeerJS yapılandırması — STUN sunucuları NAT ardındaki bağlantı için kritik
+const PEER_CONFIG = {
+    debug: 2,
+    config: {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:global.stun.twilio.com:3478' }
+        ]
+    }
+};
+
+function explainPeerError(err) {
+    const t = err && err.type;
+    if (t === 'peer-unavailable') return 'Oda bulunamadı. Kod doğru mu? Host hâlâ açık mı?';
+    if (t === 'network')          return 'İnternet kopuk gibi — WiFi/4G kontrol et.';
+    if (t === 'webrtc')           return 'WebRTC engellenmiş (VPN/kurumsal ağ olabilir).';
+    if (t === 'server-error')     return 'PeerJS sunucusu meşgul — birkaç dk sonra tekrar dene.';
+    if (t === 'socket-error')     return 'Sunucuya bağlanılamıyor — internet/sunucu sorunu.';
+    if (t === 'socket-closed')    return 'Sunucu bağlantısı koptu — yeniden dene.';
+    if (t === 'unavailable-id')   return 'Bu kod zaten kullanımda — yeni oda kur.';
+    if (t === 'browser-incompatible') return 'Tarayıcı WebRTC desteklemiyor — Chrome/Safari güncel sürüm gerek.';
+    return (err && (err.type || err.message)) || 'Bilinmeyen hata';
+}
+
 function hostRoom() {
     if (peer) return;
     if (typeof Peer === 'undefined') {
@@ -1790,14 +1829,18 @@ function hostRoom() {
     isHost = true;
     setMpStatus('🔄 Oda kuruluyor...');
     setMpButtons({ host: false, join: false });
-    peer = new Peer('zy-' + roomCode, { debug: 1 });
+    peer = new Peer('zy-' + roomCode, PEER_CONFIG);
     peer.on('open', id => {
         setMpStatus(`✅ Oda kuruldu! Kod: <b title="Kopyalamak için tıkla">${roomCode}</b> 📋 · arkadaşına gönder`);
     });
     peer.on('connection', c => { conn = c; setupConn(); });
+    peer.on('disconnected', () => {
+        setMpStatus('⚠️ Sunucu bağlantısı koptu — yeniden bağlanılıyor...');
+        try { peer.reconnect(); } catch(e) {}
+    });
     peer.on('error', err => {
         console.error('Peer error:', err);
-        setMpStatus('❌ Hata: ' + (err.type || err.message));
+        setMpStatus('❌ Host hatası: ' + explainPeerError(err));
         setMpButtons({ host: true, join: true });
         peer = null;
     });
@@ -1815,15 +1858,25 @@ function joinRoom() {
     isHost = false;
     setMpStatus('🔄 Bağlanıyor...');
     setMpButtons({ host: false, join: false });
-    peer = new Peer({ debug: 1 });
+    peer = new Peer(undefined, PEER_CONFIG);
     peer.on('open', () => {
+        setMpStatus('🔄 Sunucuya bağlandık, odayı arıyoruz...');
         conn = peer.connect('zy-' + code, { reliable: true });
+        // Bağlantı 10 sn içinde kurulmazsa zaman aşımı
+        const timeout = setTimeout(() => {
+            if (conn && !conn.open) {
+                setMpStatus('⚠️ Oda yanıt vermiyor — host hala açık mı? Kod doğru mu?');
+            }
+        }, 10000);
+        conn.on('open', () => clearTimeout(timeout));
         setupConn();
+    });
+    peer.on('disconnected', () => {
+        setMpStatus('⚠️ Sunucu bağlantısı koptu');
     });
     peer.on('error', err => {
         console.error('Peer error:', err);
-        const msg = err.type === 'peer-unavailable' ? 'Oda bulunamadı — kodu kontrol et' : (err.type || err.message);
-        setMpStatus('❌ ' + msg);
+        setMpStatus('❌ ' + explainPeerError(err));
         setMpButtons({ host: true, join: true });
         peer = null;
     });
