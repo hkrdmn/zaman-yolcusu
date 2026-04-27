@@ -1793,16 +1793,34 @@ function setMpButtons({ host = true, join = true, disconnect = false }) {
     document.getElementById('disconnectBtn').style.display = disconnect ? '' : 'none';
 }
 
-// PeerJS yapılandırması — STUN sunucuları NAT ardındaki bağlantı için kritik
+// PeerJS yapılandırması — STUN + TURN sunucuları
+// Explicit host/port/secure → iOS Safari'da auto-detect bazen yanlış seçiyor
 const PEER_CONFIG = {
     debug: 2,
+    host: '0.peerjs.com',
+    port: 443,
+    secure: true,
     config: {
         iceServers: [
+            // STUN — public, ücretsiz, Google + diğer
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' },
             { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:global.stun.twilio.com:3478' }
-        ]
+            { urls: 'stun:stun.cloudflare.com:3478' },
+            { urls: 'stun:global.stun.twilio.com:3478' },
+            // TURN — NAT/firewall arkasındaki cihazlar için relay
+            // OpenRelay (ücretsiz public, bandwidth limitli) — TURN over UDP & TCP
+            {
+                urls: [
+                    'turn:openrelay.metered.ca:80',
+                    'turn:openrelay.metered.ca:443',
+                    'turn:openrelay.metered.ca:443?transport=tcp'
+                ],
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+            }
+        ],
+        iceCandidatePoolSize: 10
     }
 };
 
@@ -1830,8 +1848,20 @@ function hostRoom() {
     setMpStatus('🔄 Oda kuruluyor...');
     setMpButtons({ host: false, join: false });
     peer = new Peer('zy-' + roomCode, PEER_CONFIG);
+
+    // Sunucuya bağlanamazsa timeout
+    const openTimeout = setTimeout(() => {
+        if (peer && !peer.open) {
+            setMpStatus('⚠️ PeerJS sunucusuna bağlanılamadı (8sn). Tekrar dene.');
+            try { peer.destroy(); } catch(e){}
+            peer = null;
+            setMpButtons({ host: true, join: true });
+        }
+    }, 8000);
+
     peer.on('open', id => {
-        setMpStatus(`✅ Oda kuruldu! Kod: <b title="Kopyalamak için tıkla">${roomCode}</b> 📋 · arkadaşına gönder`);
+        clearTimeout(openTimeout);
+        setMpStatus(`✅ Oda hazır! Kod: <b title="Kopyalamak için tıkla">${roomCode}</b> 📋 · arkadaşa gönder`);
     });
     peer.on('connection', c => { conn = c; setupConn(); });
     peer.on('disconnected', () => {
@@ -1839,6 +1869,7 @@ function hostRoom() {
         try { peer.reconnect(); } catch(e) {}
     });
     peer.on('error', err => {
+        clearTimeout(openTimeout);
         console.error('Peer error:', err);
         setMpStatus('❌ Host hatası: ' + explainPeerError(err));
         setMpButtons({ host: true, join: true });
@@ -1856,25 +1887,64 @@ function joinRoom() {
     if (code.length < 4) { setMpStatus('⚠️ Geçerli bir oda kodu gir'); return; }
     roomCode = code;
     isHost = false;
-    setMpStatus('🔄 Bağlanıyor...');
+    setMpStatus('🔄 Sunucuya bağlanılıyor...');
     setMpButtons({ host: false, join: false });
+
+    let openTimeout = null;
+    let connectAttempt = 0;
+
     peer = new Peer(undefined, PEER_CONFIG);
-    peer.on('open', () => {
-        setMpStatus('🔄 Sunucuya bağlandık, odayı arıyoruz...');
-        conn = peer.connect('zy-' + code, { reliable: true });
-        // Bağlantı 10 sn içinde kurulmazsa zaman aşımı
-        const timeout = setTimeout(() => {
-            if (conn && !conn.open) {
-                setMpStatus('⚠️ Oda yanıt vermiyor — host hala açık mı? Kod doğru mu?');
+
+    // Sunucu açılma timeout: 8 sn
+    openTimeout = setTimeout(() => {
+        if (peer && !peer.open) {
+            setMpStatus('⚠️ Sunucuya bağlanılamadı (8sn). Tekrar dene.');
+            try { peer.destroy(); } catch(e){}
+            peer = null;
+            setMpButtons({ host: true, join: true });
+        }
+    }, 8000);
+
+    peer.on('open', (id) => {
+        clearTimeout(openTimeout);
+        setMpStatus(`🔄 Sunucuda kayıt oldun (${id.substr(0,8)}...). Odayı arıyoruz...`);
+
+        function tryConnect() {
+            connectAttempt++;
+            try {
+                conn = peer.connect('zy-' + code, { reliable: true });
+            } catch (e) {
+                console.error('connect throw:', e);
+                setMpStatus('❌ Bağlanma hatası: ' + e.message);
+                return;
             }
-        }, 10000);
-        conn.on('open', () => clearTimeout(timeout));
-        setupConn();
+            const connTimeout = setTimeout(() => {
+                if (conn && !conn.open) {
+                    if (connectAttempt < 2) {
+                        setMpStatus(`⚠️ Cevap yok, tekrar deniyorum (${connectAttempt}/2)...`);
+                        try { conn.close(); } catch(e){}
+                        tryConnect();
+                    } else {
+                        setMpStatus('❌ Oda yanıt vermiyor. Host açık mı? Kodu kontrol et.');
+                    }
+                }
+            }, 8000);
+            conn.on('open', () => clearTimeout(connTimeout));
+            conn.on('error', (e) => {
+                clearTimeout(connTimeout);
+                console.error('conn error:', e);
+                setMpStatus('❌ Bağlantı hatası: ' + (e.type || e.message || 'bilinmeyen'));
+            });
+            setupConn();
+        }
+        tryConnect();
     });
+
     peer.on('disconnected', () => {
         setMpStatus('⚠️ Sunucu bağlantısı koptu');
     });
     peer.on('error', err => {
+        clearTimeout(openTimeout);
         console.error('Peer error:', err);
         setMpStatus('❌ ' + explainPeerError(err));
         setMpButtons({ host: true, join: true });
